@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="伍佰说：你20多岁的年纪怎么这么痛苦？"><title>一些杂乱的 OC 面试题 | 橘子的皮</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 7.0.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">一些杂乱的 OC 面试题</h1><a id="logo" href="/.">橘子的皮</a><p class="description">人生苦短，还是要打工还是要打工打工打工</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">一些杂乱的 OC 面试题</h1><div class="post-meta">2021-02-23</div><div class="post-content"><p>一张非常经典的描述 instance 对象、类对象以及元类对象之间关系的图片。途中虚线代表 isa 指针，实线代表 superClass 指针。<br><img src="https://gitee.com/zlfmayun/eeeee/blob/master/img/pexels-lukas-1420701.jpg"></p>
+<span id="more"></span>
+
+<h4 id="1-OC-系统对象的-copy-与-mutableCopy-方法"><a href="#1-OC-系统对象的-copy-与-mutableCopy-方法" class="headerlink" title="1. OC 系统对象的 copy 与 mutableCopy 方法"></a>1. OC 系统对象的 copy 与 mutableCopy 方法</h4><ul>
+<li><p>非集合类对象的 copy 与 mutableCopy<br>在非集合类对象中，对不可变对象进行 copy 操作，是指针复制，mutableCopy 操作是内容复制；<br>对可变对象进行 copy 和 mutableCopy 都是内容复制。用代码简单表示如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *str = <span class="string">@&quot;hello word!&quot;</span>;</span><br><span class="line"><span class="built_in">NSString</span> *strCopy = [str <span class="keyword">copy</span>] <span class="comment">// 指针复制，strCopy与str的地址一样</span></span><br><span class="line"><span class="built_in">NSMutableString</span> *strMCopy = [str mutableCopy] <span class="comment">// 内容复制，strMCopy与str的地址不一样</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">NSMutableString</span> *mutableStr = [<span class="built_in">NSMutableString</span> stringWithString: <span class="string">@&quot;hello word!&quot;</span>];</span><br><span class="line"><span class="built_in">NSString</span> *strCopy = [mutableStr <span class="keyword">copy</span>] <span class="comment">// 内容复制</span></span><br><span class="line"><span class="built_in">NSMutableString</span> *strMCopy = [mutableStr mutableCopy] <span class="comment">// 内容复制</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>集合类对象的 copy 与 mutableCopy (同上)<br>在集合类对象中，对不可变对象进行 copy 操作，是指针复制，mutableCopy 操作是内容复制；<br>对可变对象进行 copy 和 mutableCopy 都是内容复制。但是：集合对象的内容复制仅限于对象本身，对集合内的对象元素仍然是指针复制。(即单层内容复制)</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *arr = @[@[<span class="string">@&quot;a&quot;</span>, <span class="string">@&quot;b&quot;</span>], @[<span class="string">@&quot;c&quot;</span>, <span class="string">@&quot;d&quot;</span>];</span><br><span class="line"><span class="built_in">NSArray</span> *copyArr = [arr <span class="keyword">copy</span>]; <span class="comment">// 指针复制</span></span><br><span class="line"><span class="built_in">NSMutableArray</span> \*mCopyArr = [arr mutableCopy]; <span class="comment">//单层内容复制</span></span><br><span class="line"><span class="built_in">NSMutableArray</span> *array = [<span class="built_in">NSMutableArray</span> arrayWithObjects:[<span class="built_in">NSMutableString</span> stringWithString:<span class="string">@&quot;a&quot;</span>],<span class="string">@&quot;b&quot;</span>,<span class="string">@&quot;c&quot;</span>,<span class="literal">nil</span>];</span><br><span class="line"><span class="built_in">NSArray</span> *copyArr = [mutableArr <span class="keyword">copy</span>]; <span class="comment">// 单层内容复制</span></span><br><span class="line"><span class="built_in">NSMutableArray</span> \*mCopyArr = [mutableArr mutableCopy]; <span class="comment">// 单层内容复制</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>【总结一句话】：<br>只有对不可变对象进行 copy 操作是指针复制（浅复制），其它情况都是内容复制（深复制）</p>
+<h4 id="2-浅拷贝和深拷贝的区别？"><a href="#2-浅拷贝和深拷贝的区别？" class="headerlink" title="2.浅拷贝和深拷贝的区别？"></a>2.浅拷贝和深拷贝的区别？</h4><ul>
+<li><p>浅拷贝：只复制指向对象的指针，而不复制引用对象本身。</p>
+</li>
+<li><p>深拷贝：复制引用对象本身。内存中存在了两份独立对象本身，当修改 A 时，A_copy 不变</p>
+</li>
+</ul>
+<h4 id="3-Category（类别）、-Extension（扩展）和继承的区别"><a href="#3-Category（类别）、-Extension（扩展）和继承的区别" class="headerlink" title="3. Category（类别）、 Extension（扩展）和继承的区别"></a>3. Category（类别）、 Extension（扩展）和继承的区别</h4><ul>
+<li><p>分类有名字，类扩展没有分类名字，是一种特殊的分类。</p>
+</li>
+<li><p>分类只能扩展方法（属性仅仅是声明，并没真正实现），类扩展可以扩展属性、成员变量和方法。</p>
+</li>
+<li><p>继承可以增加，修改或者删除方法，并且可以增加属性</p>
+</li>
+</ul>
+<h4 id="4-ViewController-生命周期"><a href="#4-ViewController-生命周期" class="headerlink" title="4.ViewController 生命周期"></a>4.ViewController 生命周期</h4><ul>
+<li><p><code>initWithCoder：</code>通过 nib 文件初始化时触发。</p>
+</li>
+<li><p><code>awakeFromNib：</code>nib 文件被加载的时候，会发生一个 awakeFromNib 的消息到 nib 文件中的每个对象。</p>
+</li>
+<li><p><code>loadView：</code>开始加载视图控制器自带的 view。</p>
+</li>
+<li><p><code>viewDidLoad：</code>视图控制器的 view 被加载完成。</p>
+</li>
+<li><p><code>viewWillAppear：</code>视图控制器的 view 将要显示在 window 上。</p>
+</li>
+<li><p><code>updateViewConstraints：</code>视图控制器的 view 开始更新 AutoLayout 约束。</p>
+</li>
+<li><p><code>viewWillLayoutSubviews：</code>视图控制器的 view 将要更新内容视图的位置。</p>
+</li>
+<li><p><code>viewDidLayoutSubviews：</code>视图控制器的 view 已经更新视图的位置。</p>
+</li>
+<li><p><code>viewDidAppear：</code>视图控制器的 view 已经展示到 window 上。</p>
+</li>
+<li><p><code>viewWillDisappear：</code>视图控制器的 view 将要从 window 上消失。</p>
+</li>
+<li><p><code>viewDidDisappear：</code>视图控制器的 view 已经从 window 上消失。</p>
+</li>
+</ul>
+<h4 id="7-synthesize-和-dynamic-分别有什么作用？"><a href="#7-synthesize-和-dynamic-分别有什么作用？" class="headerlink" title="7. @synthesize 和 @dynamic 分别有什么作用？"></a>7. @synthesize 和 @dynamic 分别有什么作用？</h4><ul>
+<li><p><code>@property</code>有两个对应的词，一个是 <code>@synthesize</code>，一个是 <code>@dynamic</code>。如果 <code>@synthesize</code>和 <code>@dynamic</code>都没写，那么默认的就是<code>@syntheszie var = _var</code>;</p>
+</li>
+<li><p><code>@synthesize</code> 的语义是如果你没有手动实现 setter 方法和 getter 方法，那么编译器会自动为你加上这两个方法。</p>
+</li>
+<li><p><code>@dynamic</code> 告诉编译器：属性的 setter 与 getter 方法由用户自己实现，不自动生成。（当然对于 readonly 的属性只需提供 getter 即可）。假如一个属性被声明为 <code>@dynamic var</code>，然后你没有提供 <code>@setter</code>方法和<code>@getter</code>方法，编译的时候没问题，但是当程序运行到 <code>instance.var = someVar</code>，由于缺 setter 方法会导致程序崩溃；或者当运行到 <code>someVar = var</code> 时，由于缺 getter 方法同样会导致崩溃。编译时没问题，运行时才执行相应的方法，这就是所谓的动态绑定。</p>
+</li>
+</ul>
+<h4 id="8-UIView-和-CALayer-是什么关系"><a href="#8-UIView-和-CALayer-是什么关系" class="headerlink" title="8. UIView 和 CALayer 是什么关系?"></a>8. UIView 和 CALayer 是什么关系?</h4><ul>
+<li><p>创建 UIView 对象时，UIView 内部会自动创建一个层(CALayer 对象)，通过 UIView 的 layer 属性可以访问这个层。当 UIView 需要显示到屏幕上时，会调用 drawRect:方法进行绘图渲染，并且会将所有内容绘制在自己的层上，绘图完毕后，系统会将层拷贝到屏幕上，于是就完成了 UIView 的显示</p>
+</li>
+<li><p>UIView 相比 CALayer 最大区别是 UIView 继承自 UIResponder，可以响应用户事件，而 CALayer 不可以；UIView 侧重于对显示内容的管理，CALayer 侧重于对内容的绘制。</p>
+</li>
+<li><p>UIView 本身，更像是一个 CALayer 的管理器，访问它的和绘图、坐标相关的属性，如 frame，bounds 等，实际上内部都是访问它所在 CALayer 的相关属性</p>
+</li>
+<li><p>UIView 和 CALayer 是相互依赖的关系。UIView 依赖 CALayer 提供的内容，CALayer 依赖 UIView 提供的容器来显示绘制的内容。归根到底 CALayer 是这一切的基础，如果没有 CALayer，UIView 自身也不会存在，UIView 是一个特殊的 CALayer 实现，添加了响应事件的能力。</p>
+</li>
+</ul>
+<p>关系：</p>
+<ul>
+<li><p>UIView 对象中的 layer 指向一个 CALayer 变量</p>
+</li>
+<li><p>UIView 对象中的 backgroundColor 属性，是对 CALayer 同名属性的封装。</p>
+</li>
+<li><p>UIView 展示部分是由 CALayer 中的 contents 来决定。contents 对应的 backing store 其实是一个 bitmap 的位图。<br>区别：</p>
+</li>
+<li><p>UIView 为其提供内容，以及负责处理触摸等事件，参与响应链。</p>
+</li>
+<li><p>CALayer 负责显示内容 contents。</p>
+</li>
+</ul>
+<h4 id="9-Runloop"><a href="#9-Runloop" class="headerlink" title="9.Runloop"></a>9.Runloop</h4><p><a target="_blank" rel="noopener" href="https://blog.ibireme.com/2015/05/18/runloop/">RunLoop</a></p>
+<h4 id="10-单利模式"><a href="#10-单利模式" class="headerlink" title="10.单利模式"></a>10.单利模式</h4><ul>
+<li><p>单例模式的作用 - 可以保证在程序运行过程，一个类只有一个实例，而且该实例易于供外界访问<br>从而方便地控制了实例个数，并节约系统资源 - 保证一个类仅有一个实例，并提供一个访问它的全局访问点。</p>
+</li>
+<li><p>单例模式的使用场合</p>
+<ul>
+<li>在整个应用程序中，共享一份资源（这份资源只需要创建初始化 1 次），一般用于工具类。例如：登陆控制器，网络数据请求，音乐播放器等一个工程需要使用多次的控制器或方法。</li>
+</ul>
+</li>
+<li><p>单例模式的优缺点</p>
+<ul>
+<li>优点：<ul>
+<li>1.单例模式可以保证系统中一个类只有一个实例而且该实例易于外界访问，从而方便对实例个数的控制并节约系统资源。</li>
+<li>2.如果希望在系统中某个类的对象只能存在一个，单例模式是最好的解决方案。</li>
+<li>3.单例模式因为类控制了实例化过程，所以类可以更加灵活修改实例化过程。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>单例对象一旦建立，对象指针是保存在静态区的，单例对象在堆中分配的内存空间，会在应用程序终止后才会被释放。</li>
+<li>单例类无法继承，因此很难进行类的扩展。</li>
+<li>单例不适用于变化的对象，如果同一类型的对象总是要在不同的用例场景发生变化，单例就会引起数据的错误，不能保存彼此的状态。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="11-KVO"><a href="#11-KVO" class="headerlink" title="11. KVO"></a>11. KVO</h4><ul>
+<li><p><code>KVO全称KeyValueObserving</code>，是苹果提供的一套事件通知机制。允许监听对象特定属性的改变，并在改变时接收到事件。</p>
+</li>
+<li><p>本质：利用 runtimeAPI 动态生成一个子类，并让 instance 对象的 isa 指向这个全新的子类，当修改 instance 对象的属性时，在全新的子类重写 set 并调用 willChangeValueForKey 和 didChangeValueForKey 并调用内部会触发监听器的监听方法（observerValueForKeyPath:）</p>
+</li>
+<li><p>区别:</p>
+<ul>
+<li><p>KVO 和 NSNotificationCenter 都是 iOS 中观察者模式的一种实现。</p>
+</li>
+<li><p>相对于被观察者和观察者之间的关系，KVO 是一对一的，而 NSNotificationCenter 一对多的。</p>
+</li>
+<li><p>KVO 对被监听对象无侵入性，不需要修改其内部代码即可实现监听。</p>
+</li>
+<li><p>KVO 可以监听单个属性的变化，也可以监听集合对象的变化。(通过 KVC 的 mutableArrayValueForKey)</p>
+</li>
+</ul>
+</li>
+<li><p>KVO 的触发模式</p>
+<ul>
+<li><p>在将要观察的对象里添加<code>+(BOOL)automaticallyNotifiesObserversForKey:(NSString *)key</code> <code>(return YES;//默认，自动模式)  (return NO;//手动模式)</code></p>
+</li>
+<li><p>在属性变化前，调用<code>willChangeValueForKey</code></p>
+</li>
+<li><p>在属性变化后，调用<code>didChangeValueForKey</code></p>
+</li>
+<li><p>无论属性的值是否发生改变,是否调用 Setter 方法，只要调用了<code>willChangeValueForKey</code>和<code>didChangeValueForKey</code>就会触发回调</p>
+</li>
+</ul>
+</li>
+<li><p>KVO 原理</p>
+<ul>
+<li><p>KVO 底层实现：首先 KVO 需要创建一个子类(NSKVONotyfing_Class)，这个子类是继承于被观察对象的，这个子类需要重写属性的 setter 方法，这个时候，外界在调用 setter 方法的时候，调用的是子类重写的 setter 方法。就是让外界的 Class 的对象的 isa 指针指向这个子类</p>
+</li>
+<li><p>官文指出 KVO 的实现，使用了 isa-swizzling。当一个 object 被观察后，该 object 的 isa 指针将会被修改指向新生成的中间类，而非之前的类；<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8d9f9d0180ab444a9044cc6880a346f0~tplv-k3u1fbpfcp-zoom-1.image"></p>
+</li>
+</ul>
+</li>
+<li><p>注意点</p>
+<ul>
+<li><p>成员变量不能使用 KVO，KVO 的本质是动态生成一个子类，重写父类的 setter 方法，实现新值旧值的回调，而成员变量的修改不是 setter 方法赋值，成员变量没有 setter</p>
+</li>
+<li><p>手动创建<code>NSKVONotyfing_Class</code>,KVO 不能生效，但是可以编译通过。系统生成的<code>NSKVONotyfing_Class</code>是运行时动态创建的</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="12-KVC"><a href="#12-KVC" class="headerlink" title="12. KVC"></a>12. KVC</h4><ul>
+<li><p><code>KVC(KeyValueCoding)</code>键值编码，可以动态地访问和修改对象的属性，简单的来说，就是通过对象的属性名（key）给属性赋值，也可以通过属性名（key）获取值。</p>
+</li>
+<li><p>底层的执行机制(赋值操作)</p>
+<ul>
+<li><p>当调用 setValue：属性值 forKey：@”name“的代码时，如下：</p>
+</li>
+<li><p>程序优先调用<code>set&lt;Key&gt;:</code>属性值方法，代码通过<code>setter</code>方法完成设置</p>
+</li>
+<li><p>如果没有找到<code>setName：</code>方法，KVC 机制会检查<code>+ (BOOL)accessInstanceVariablesDirectly</code>方法有没有返回 YES，默认该方法会返回 YES，如果你重写了该方法让其返回 NO 的话，那么在这一步 KVC 会执行<code>setValue：forUndefinedKey：</code>方法，不过一般开发者不会这么做。所以 KVC 机制会搜索该类里面有没有名为<code>_&lt;key&gt;</code>的成员变量，无论该变量是在类接口处定义，还是在类实现处定义，也无论用了什么样的访问修饰符，只在存在以<code>_&lt;key&gt;</code>命名的变量，KVC 都可以对该成员变量赋值。</p>
+</li>
+<li><p>如果该类即没有<code>set&lt;key&gt;：</code>方法，也没有<code>_&lt;key&gt;</code>成员变量，KVC 机制会搜索<code>_is&lt;Key&gt;</code>的成员变量。</p>
+</li>
+<li><p>如果该类即没有<code>set&lt;Key&gt;：</code>方法，也没有<code>_&lt;key&gt;</code>和<code>_is&lt;Key&gt;</code>成员变量，KVC 机制再会继续搜索<code>&lt;key&gt;</code>和<code>is&lt;Key&gt;</code>的成员变量。再给它们赋值。</p>
+</li>
+<li><p>如果上面列出的方法或者成员变量都不存在，系统将会执行该对象的<code>setValue：forUndefinedKey：</code>方法，默认是抛出异常。</p>
+</li>
+</ul>
+</li>
+<li><p>底层的执行机制(取值操作)</p>
+<ul>
+<li><p>当调用<code>valueForKey：@”name“</code>的代码</p>
+</li>
+<li><p>首先按<code>get&lt;Key&gt;</code>,<code>&lt;key&gt;</code>,<code>is&lt;Key&gt;</code>的顺序方法查找 getter 方法，找到的话会直接调用。如果是 BOOL 或者 Int 等值类型， 会将其包装成一个 NSNumber 对象。</p>
+</li>
+<li><p>如果上面的<code>getter</code>没有找到，KVC 则会查找<code>countOf&lt;Key&gt;</code>,<code>objectIn&lt;Key&gt;AtIndex</code>或<code>&lt;Key&gt;AtIndexes</code>格式的方法。如果<code>countOf&lt;Key&gt;</code>方法和另外两个方法中的一个被找到，那么就会返回一个可以响应 NSArray 所有方法的代理集合(它是 NSKeyValueArray，是 NSArray 的子类)，调用这个代理集合的方法，或者说给这个代理集合发送属于 NSArray 的方法，就会以<code>countOf&lt;Key&gt;</code>,<code>objectIn&lt;Key&gt;AtIndex</code>或<code>&lt;Key&gt;AtIndexes</code>这几个方法组合的形式调用。还有一个可选的<code>get&lt;Key&gt;:range:</code>方法。所以你想重新定义 KVC 的一些功能，你可以添加这些方法，需要注意的是你的方法名要符合 KVC 的标准命名方法，包括方法签名。</p>
+</li>
+<li><p>如果上面的方法没有找到，那么会同时查找<code>countOf&lt;Key&gt;</code>，<code>enumeratorOf&lt;Key&gt;</code>,<code>memberOf&lt;Key&gt;</code>格式的方法。如果这三个方法都找到，那么就返回一个可以响应 NSSet 所的方法的代理集合，和上面一样，给这个代理集合发 NSSet 的消息，就会以<code>countOf&lt;Key&gt;</code>，<code>enumeratorOf&lt;Key&gt;</code>,<code>memberOf&lt;Key&gt;</code>组合的形式调用。</p>
+</li>
+<li><p>如果还没有找到，再检查类方法<code>+ (BOOL)accessInstanceVariablesDirectly</code>,如果返回 YES(默认行为)，那么和先前的设值一样，会按<code>_&lt;key&gt;</code>,<code>_is&lt;Key&gt;</code>,<code>&lt;key&gt;</code>,<code>is&lt;Key&gt;</code>的顺序搜索成员变量名，这里不推荐这么做，因为这样直接访问实例变量破坏了封装性，使代码更脆弱。如果重写了类方法<code>+ (BOOL)accessInstanceVariablesDirectly</code>返回 NO 的话，那么会直接调用<code>valueForUndefinedKey</code>:</p>
+</li>
+<li><p>还没有找到的话，调用<code>valueForUndefinedKey</code>:</p>
+</li>
+</ul>
+</li>
+<li><p>KVC 常用场景</p>
+<ul>
+<li>运行时动态地取值和赋值</li>
+<li>用 KVC 来访问和修改私有变量</li>
+<li>Model 和字典转换</li>
+<li>修改控件的内部属性</li>
+</ul>
+</li>
+</ul>
+<h4 id="13-Category-的实现过程？"><a href="#13-Category-的实现过程？" class="headerlink" title="13.Category 的实现过程？"></a>13.Category 的实现过程？</h4><ul>
+<li><p>Category，可以动态的为已经存在的类添加新的行为。这样可以保证类的原始设计规模较小，功能增加时再逐步扩展。使用 Category 对类进行扩展时，不需要访问其源代码，也不需要创建子类。Category 使用简单的方式，实现了类的相关方法的模块化，把不同的类方法分配到不同的分类文件中。</p>
+</li>
+<li><p>如果发生方法与原始类重名，则优先加载分类里的方法 <code>(分类是在main函数之前、初始化runtime库的时候加载的)</code></p>
+</li>
+<li><p>Category 本质是一个结构体（Category_t），通过 runtime 与原始类合并，新添加的方法会倒序插入到原始类方法列表的最前面，所以说当出现重名，实际上加载的方法是最后一个被添加的方法,举个例子 👇</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">原方法列表</span><br><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">分类新加的方法列表</span><br><span class="line">[<span class="number">1</span>,<span class="number">1</span>,<span class="number">13</span>,<span class="number">2</span>]</span><br><span class="line">倒序插入</span><br><span class="line">[<span class="number">2</span>,<span class="number">13</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">方法查询 查找名为<span class="number">2</span>的方法，那么第一个<span class="number">2</span>就会被加载 所以分类的优先级高</span><br></pre></td></tr></table></figure></li>
+<li><p>不能添加属性变量和实例变量，无法生成<code>getter</code>和<code>setter</code>，类内存布局在编译时期就确定了，而<code>CateGory</code>是在运行时才加载的 。 但是利用<code>runtime</code>关联对象可以添加属性变量，在<code>runtime</code>中存在一个类型为<code>AssociationHashMap</code>的哈希映射表保存着对象动态添加的属性，每个对象以自身地址为<code>key</code>维护着一个绑定属性表，我们动态添加的属性就都存储在这个表里</p>
+</li>
+</ul>
+<h4 id="14-Obj-C-中的类信息存放在哪里？"><a href="#14-Obj-C-中的类信息存放在哪里？" class="headerlink" title="14.Obj-C 中的类信息存放在哪里？"></a>14.Obj-C 中的类信息存放在哪里？</h4><ul>
+<li><p>类方法存储在元类。</p>
+<ul>
+<li><p>对象方法、属性、成员变量、协议等存放在 Class 对象中。</p>
+</li>
+<li><p>类方法存放在 meta-class 对象中。</p>
+</li>
+<li><p>成员变量的具体指，存放在 instance 对象中。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="15-autoreleasepool-自动释放池"><a href="#15-autoreleasepool-自动释放池" class="headerlink" title="15.@autoreleasepool 自动释放池"></a>15.@autoreleasepool 自动释放池</h4><ul>
+<li><p>概念：AppKit 和 UIKit 框架在事件循环(RunLoop)的每次循环开始时，在主线程创建一个自动释放池，并在每次循环结束时销毁它，在销毁时释放自动释放池中的所有 autorelease 对象</p>
+</li>
+<li><p>ARC 环境下，autorelease 对象在什么时候释放？</p>
+<ul>
+<li>系统干预释放: 由<code>RunLoop</code>控制的，会在当前<code>RunLoop</code>每次循环结束时释放。</li>
+<li>手动干预释: 在<code>@autoreleasepool</code>大括号结束时就会释放，不受<code>RunLoop</code>控制。</li>
+</ul>
+</li>
+<li><p>@autoreleasepool 使用场景 （Apple 文档描述） - ① 如果你编写的程序不是基于 UI 框架的，比如说命令行工具； - ② 如果你编写的循环中创建了大量的临时对象；<br>你可以在循环内使用<code>@autoreleasepool</code>在下一次迭代之前处理这些对象。在循环中使用<code>@autoreleasepool</code>有助于减少应用程序的最大内存占用。 - ③ 如果你创建了辅助线程。<br>一旦线程开始执行，就必须创建自己的<code>@autoreleasepool</code>；否则，你的应用程序将存在内存泄漏。</p>
+</li>
+</ul>
+<h4 id="16-Dealloc-的实现机制"><a href="#16-Dealloc-的实现机制" class="headerlink" title="16. Dealloc 的实现机制"></a>16. Dealloc 的实现机制</h4><ul>
+<li><p>1.Dealloc 调用流程</p>
+<ul>
+<li>1.首先调用 _objc_rootDealloc()</li>
+<li>2.接下来调用 rootDealloc()</li>
+<li>3.这时候会判断是否可以被释放，判断的依据主要有 5 个，判断是否有以上五种情况<ul>
+<li>NONPointer_ISA</li>
+<li>weakly_reference</li>
+<li>has_assoc</li>
+<li>has_cxx_dtor</li>
+<li>has_sidetable_rc</li>
+</ul>
+</li>
+<li>4-1.如果有以上五中任意一种，将会调用 object_dispose()方法，做下一步的处理。</li>
+<li>4-2.如果没有之前五种情况的任意一种，则可以执行释放操作，C 函数的 free()。</li>
+<li>5.执行完毕。</li>
+</ul>
+</li>
+<li><p>2.object_dispose() 调用流程。</p>
+<ul>
+<li>1.直接调用 objc_destructInstance()。</li>
+<li>2.之后调用 C 函数的 free()。</li>
+</ul>
+</li>
+<li><p>3.objc_destructInstance() 调用流程</p>
+<ul>
+<li>1.先判断 hasCxxDtor，如果有 C++ 的相关内容，要调用 object_cxxDestruct() ，销毁 C++ 相关的内容。</li>
+<li>2.再判断 hasAssocitatedObjects，如果有的话，要调用 object_remove_associations()，销毁关联对象的一系列操作。</li>
+<li>3.然后调用 clearDeallocating()。</li>
+<li>4.执行完毕。</li>
+</ul>
+</li>
+<li><p>4.clearDeallocating() 调用流程。</p>
+<ul>
+<li>1.先执行 sideTable_clearDellocating()。</li>
+<li>2.再执行 weak_clear_no_lock,在这一步骤中，会将指向该对象的弱引用指针置为 nil。</li>
+<li>3.接下来执行 table.refcnts.eraser()，从引用计数表中擦除该对象的引用计数。</li>
+<li>4.至此为止，Dealloc 的执行流程结束。</li>
+</ul>
+</li>
+</ul>
+<h4 id="17-Runloop-和线程的关系"><a href="#17-Runloop-和线程的关系" class="headerlink" title="17.Runloop 和线程的关系"></a>17.Runloop 和线程的关系</h4><ul>
+<li><p>一个线程对应一个 Runloop。</p>
+</li>
+<li><p>主线程的默认就有了 Runloop。</p>
+</li>
+<li><p>子线程的 Runloop 以懒加载的形式创建。</p>
+</li>
+<li><p>Runloop 存储在一个全局的可变字典里，线程是 key ，Runloop 是 value。</p>
+</li>
+</ul>
+<h4 id="18-WKWebView-那些坑"><a href="#18-WKWebView-那些坑" class="headerlink" title="18.[WKWebView 那些坑]"></a>18.<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/rhYKLIbXOsUJC_n6dt9UfA">[WKWebView 那些坑]</a></h4><h4 id="19-xib-拖出的控件属性为什么要-weak-修饰？还有-Delegate"><a href="#19-xib-拖出的控件属性为什么要-weak-修饰？还有-Delegate" class="headerlink" title="19.xib 拖出的控件属性为什么要 weak 修饰？还有 Delegate"></a>19.xib 拖出的控件属性为什么要 weak 修饰？还有 Delegate</h4><blockquote>
+<p>因为会造成循环引用 ，出现释放问题</p>
+</blockquote>
+<ul>
+<li>ViewController–&gt;View–&gt;subviews–&gt;控件–&gt;ViewController</li>
+<li>ViewController–&gt;TableView–&gt;DataSource–&gt;ViewController</li>
+</ul>
+<blockquote>
+<p>delegate<br>weak：修饰对象只是指明该对象，并不负责保持这个对象，对象的销毁是由外部控制的。</p>
+</blockquote>
+<blockquote>
+<p>delegate<br>strong：修饰对象是对该对象进行强引用，外界不能销毁该对象，会导致循环引用（Retain Cycles）</p>
+</blockquote>
+<h4 id="20-显示动画和隐式动画的区别？"><a href="#20-显示动画和隐式动画的区别？" class="headerlink" title="20.显示动画和隐式动画的区别？"></a>20.显示动画和隐式动画的区别？</h4><ul>
+<li>显式动画就是需要我们明确指定类型、时间等参数来实现效果的动画。例如：CABasicAnimation，CAKeyframeAnimation，CATransitionAnimation，CAAnimationGroup</li>
+<li>隐式动画是指我们可以在不设定任何动画类型的情况下，仅仅改变 CALayer 的一个可做动画的属性，就能实现动画效果。例如： 改变一个控件的颜色，官方默认有 0.25 的过渡时间，具体可以查看这个<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1418000">资料</a></li>
+</ul>
+<h4 id="21-TCP-和-UDP-的区别于联系"><a href="#21-TCP-和-UDP-的区别于联系" class="headerlink" title="21.TCP 和 UDP 的区别于联系"></a>21.TCP 和 UDP 的区别于联系</h4><ul>
+<li><p>TCP 为传输控制层协议，为面向连接、可靠的、点到点的通信；</p>
+</li>
+<li><p>UDP 为用户数据报协议，非连接的不可靠的点到多点的通信；</p>
+</li>
+<li><p>TCP 侧重可靠传输，UDP 侧重快速传输。</p>
+</li>
+</ul>
+<h4 id="22-网络七层协议"><a href="#22-网络七层协议" class="headerlink" title="22.网络七层协议"></a>22.网络七层协议</h4><ul>
+<li><p>应用层： 1.用户接口、应用程序； 2.Application 典型设备：网关； 3.典型协议、标准和应用：TELNET、FTP、HTTP</p>
+</li>
+<li><p>表示层： 1.数据表示、压缩和加密 presentation 2.典型设备：网关 3.典型协议、标准和应用：ASCLL、PICT、TIFF、JPEG|MPEG 4.表示层相当于一个东西的表示，表示的一些协议，比如图片、声音和视频 MPEG。</p>
+</li>
+<li><p>会话层： 1.会话的建立和结束； 2.典型设备：网关； 3.典型协议、标准和应用：RPC、SQL、NFS、X WINDOWS、ASP</p>
+</li>
+<li><p>传输层： 1.主要功能：端到端控制 Transport； 2.典型设备：网关； 3.典型协议、标准和应用：TCP、UDP、SPX</p>
+</li>
+<li><p>网络层： 1.主要功能：路由、寻址 Network； 2.典型设备：路由器； 3.典型协议、标准和应用：IP、IPX、APPLETALK、ICMP；</p>
+</li>
+<li><p>数据链路层： 1.主要功能：保证无差错的疏忽链路的 data link； 2.典型设备：交换机、网桥、网卡； 3.典型协议、标准和应用：802.2、802.3ATM、HDLC、FRAME RELAY；</p>
+</li>
+<li><p>物理层： 1.主要功能：传输比特流 Physical； 2.典型设备：集线器、中继器 3.典型协议、标准和应用：V.35、EIA&#x2F;TIA-232.</p>
+</li>
+</ul>
+<h4 id="23-Category-为什么不能添加成员变量"><a href="#23-Category-为什么不能添加成员变量" class="headerlink" title="23.Category 为什么不能添加成员变量"></a>23.Category 为什么不能添加成员变量</h4><p>Category 不能添加成员变量，但是可以添加属性，但是属性要手动实现 setter 和 getter 方法（runtime 关联对象）。</p>
+<blockquote>
+<p>在 Objective-C 提供的 runtime 函数中，确实有一个<code>lass_addIvar()</code>函数用于给类添加成员变量，但是文档中特别说明：<code>This function may only be called after objc_allocateClassPair and before objc_registerClassPair. Adding an instance variable to an existing class is not supported.</code>意思是说，这个函数只能在“构建一个类的过程中”调用。一旦完成类定义，就不能再添加成员变量了。经过编译的类在程序启动后就被 runtime 加载，没有机会调用<code>addIvar</code>。程序在运行时动态构建的类需要在调用<code>objc_registerClassPair</code>之后才可以被使用，同样没有机会再添加成员变量。</p>
+</blockquote>
+<blockquote>
+<p>runtime 头文件中<code>category_t</code>中少了 <code>struct objc_ivar_list * _Nullable ivars</code>也就是说没有存储 ivar 数组(成员变量数组)结合 category 与原类的结合时机总结：分类并不会改变原有类的内存分布的情况，它是在运行期间决定的，此时内存的分布已经确定，若此时再添加实例会改变内存的分布情况，这对编译性语言是灾难，是不允许的。</p>
+</blockquote>
+<h4 id="24-Category-为什么能直接添加方法和属性："><a href="#24-Category-为什么能直接添加方法和属性：" class="headerlink" title="24.Category 为什么能直接添加方法和属性："></a>24.Category 为什么能直接添加方法和属性：</h4><blockquote>
+<p>因为方法和属性并不“属于”类实例，而成员变量“属于”类实例。我们所说的“类实例”概念，指的是一块内存区域，包含了 isa 指针和所有的成员变量。所以假如允许动态修改类成员变量布局，已经创建出的类实例就不符合类定义了，变成了无效对象。但方法定义是在 objc_class 中管理的，不管如何增删类方法，都不影响类实例的内存布局，已经创建出的类实例仍然可正常使用。</p>
+</blockquote>
+<h4 id="25-weak-指针自动置为-nil-的底层实现"><a href="#25-weak-指针自动置为-nil-的底层实现" class="headerlink" title="25 weak 指针自动置为 nil 的底层实现"></a>25 weak 指针自动置为 nil 的底层实现</h4><blockquote>
+<p>Runtime 维护了一个 Weak 表，用于存储指向某个对象的所有 Weak 指针。Weak 表其实是一个哈希表，Key 是所指对象的地址，Value 是 Weak 指针的地址（这个地址的值是所指对象的地址）的数组。在对象被回收的时候，经过层层调用，会最终触发下面的方法将所有 Weak 指针的值设为 nil。</p>
+</blockquote>
+<ul>
+<li><p>weak 的实现原理可以概括一下三步：</p>
+<ul>
+<li><p>1、初始化时：runtime 会调用 objc_initWeak 函数，初始化一个新的 weak 指针指向对象的地址。</p>
+</li>
+<li><p>2、添加引用时：objc_initWeak 函数会调用 objc_storeWeak() 函数， objc_storeWeak() 的作用是更新指针指向，创建对应的弱引用表。</p>
+</li>
+<li><p>3、释放时，调用 clearDeallocating 函数。clearDeallocating 函数首先根据对象地址获取所有 weak 指针地址的数组，然后遍历这个数组把其中的数据设为 nil，最后把这个 entry 从 weak 表中删除，最后清理对象的记录。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="26-block-修饰关键字-strong-copy"><a href="#26-block-修饰关键字-strong-copy" class="headerlink" title="26. block 修饰关键字 strong copy"></a>26. block 修饰关键字 strong copy</h4><blockquote>
+<p>先来温习下 <code>strong copy</code>的语义，<code>strong</code>表示一种拥有关系，给该属性赋值的时候，设置方法会先保留新值，并释放旧值，然后在设置新值。<code>copy</code>与 strong 的所属关系类似，但是在设置方法里不会保留新值，而是将其拷贝，然后在设置新值。</p>
+</blockquote>
+<ul>
+<li><p>block 本身是像对象一样可以 retain，和 release。但是，block 在创建的时候，它的内存是分配在栈上的，而不是在堆上。他本身的作于域是属于创建时候的作用域，一旦在创建时候的作用域外面调用 block 将导致程序崩溃。因为栈区的特点就是创建的对象随时可能被销毁,一旦被销毁后续再次调用空对象就可能会造成程序崩溃。</p>
+</li>
+<li><p>block 使用 copy 是从 MRC 遗留下来的“传统”,在 MRC 中,方法内部的 block 是在栈区的,使用 copy 可以把它放到堆区.</p>
+</li>
+<li><p>在 ARC 中使用 strong 也可以，但是 block 的 strong 行为默认是用 copy 的行为实现的，<br>因为 block 变量默认是声明为栈变量的，为了能够在 block 的声明域外使用，所以要把 block 拷贝（copy）到堆，所以说为了 block 属性声明和实际的操作一致，最好声明为 copy。</p>
+</li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2021/10/26/iOS%20Android%20%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91%E6%8F%92%E4%BB%B6%20fastlane-plugin-notifyworker%20%E9%80%82%E7%94%A8%E4%BA%8E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%EF%BC%8C%E9%92%89%E9%92%89/">iOS Android 打包分发插件 fastlane-plugin-notifyworker 适用于企业微信，钉钉</a><a class="next" href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/">快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/10/26/iOS%20Android%20%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91%E6%8F%92%E4%BB%B6%20fastlane-plugin-notifyworker%20%E9%80%82%E7%94%A8%E4%BA%8E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%EF%BC%8C%E9%92%89%E9%92%89/">iOS Android 打包分发插件 fastlane-plugin-notifyworker 适用于企业微信，钉钉</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/02/23/%E4%B8%80%E4%BA%9B%E6%9D%82%E4%B9%B1%E7%9A%84OC%E9%9D%A2%E8%AF%95%E9%A2%98/">一些杂乱的 OC 面试题</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/">快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/">Ubuntu + Django + Uwsgi + Nginx 线上部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/%E5%B8%B8%E7%94%A8Git%20%E5%91%BD%E4%BB%A4%20%E6%B8%85%E5%8D%95%E9%80%9F%E6%9F%A5/">常用Git 命令 清单速查</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/">swift面试题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2023 <a href="/." rel="nofollow">橘子的皮.
+赣ICP备2023012875号.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js"></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0"></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js?v=1.0.0" successtext="复制成功！"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.0"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="伍佰说：你20多岁的年纪怎么这么痛苦？"><title>Ubuntu + Django + Uwsgi + Nginx 线上部署 | 橘子的皮</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
+var toggle = document.querySelector('.darkmode-toggle');
+var html = document.querySelector('html');
+
+html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+
+toggle.addEventListener('click', () => {
+localStorage.dark = !(html.dataset.dark == 'true');
+html.dataset.dark = localStorage.dark;
+});</script><meta name="generator" content="Hexo 7.0.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Ubuntu + Django + Uwsgi + Nginx 线上部署</h1><a id="logo" href="/.">橘子的皮</a><p class="description">人生苦短，还是要打工还是要打工打工打工</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Ubuntu + Django + Uwsgi + Nginx 线上部署</h1><div class="post-meta">2020-07-27</div><div class="post-content"><p>新手学习 Python Web 后端之 Django, 线上部署记录.</p>
+<span id="more"></span>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>Ubuntu 16.04.6</li>
+<li>Python 3.7.8</li>
+<li>Django 3.0.6</li>
+<li>Uwsgi 2.0.19.1</li>
+<li>Nginx 1.10.3</li>
+</ul>
+<h3 id="安装-python3-7"><a href="#安装-python3-7" class="headerlink" title="安装 python3.7"></a>安装 python3.7</h3><p>ubuntu 自带 python2.7、python3.5</p>
+<ul>
+<li>查看所有版本</li>
+</ul>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># ls /usr/bin/python*</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/python     /u</span>sr<span class="regexp">/bin/</span>python2.<span class="number">7</span>-config    <span class="regexp">/usr/</span>bin<span class="regexp">/python2-pbr  /u</span>sr<span class="regexp">/bin/</span>python3.<span class="number">5</span>-config   <span class="regexp">/usr/</span>bin/python3m-config</span><br><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/python2    /u</span>sr<span class="regexp">/bin/</span>python2-config      <span class="regexp">/usr/</span>bin<span class="regexp">/python3      /u</span>sr<span class="regexp">/bin/</span>python3.<span class="number">5</span>m          <span class="regexp">/usr/</span>bin/python3-config</span><br><span class="line"><span class="regexp">/usr/</span>bin<span class="regexp">/python2.7  /u</span>sr<span class="regexp">/bin/</span>python2-jsonschema  <span class="regexp">/usr/</span>bin<span class="regexp">/python3.5    /u</span>sr<span class="regexp">/bin/</span>python3.<span class="number">5</span>m-config  <span class="regexp">/usr/</span>bin/python3m</span><br><span class="line"><span class="regexp">/usr/</span>bin/python-config</span><br><span class="line">没有<span class="number">3.7</span>的版本</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装 python3.7</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># sudo apt-get install python3.7</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看默认版本</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~# <span class="keyword">python</span> --<span class="keyword">version</span></span><br><span class="line">Python <span class="number">3.5</span>.<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>系统默认环境不是 python3.7 更改默认为 python3.7<br>先删除默认的 Python 软链接</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">~# </span><span class="language-bash">sudo <span class="built_in">rm</span> /usr/bin/python</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加默认的 Python 软链接指向 3.7</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">~# </span><span class="language-bash">sudo <span class="built_in">ln</span> -s /usr/bin/python3.7 /usr/bin/python</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>再次查看默认版本</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~# <span class="keyword">python</span> --<span class="keyword">version</span></span><br><span class="line">Python <span class="number">3.7</span>.<span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装 pip 包管理工具</li>
+</ul>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">~<span class="meta"># wget https:<span class="comment">//bootstrap.pypa.io/get-pip.py</span></span></span><br><span class="line"></span><br><span class="line">~<span class="meta"># python get-pip.py</span></span><br><span class="line"></span><br><span class="line">安装成功  查看pip版本</span><br><span class="line">~<span class="meta"># pip -V</span></span><br><span class="line">pip <span class="number">20.1</span><span class="number">.1</span> from <span class="keyword">/usr/</span>local<span class="keyword">/lib/</span>python3<span class="number">.7</span><span class="keyword">/dist-packages/</span>pip (python <span class="number">3.7</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装虚拟环境"><a href="#安装虚拟环境" class="headerlink" title="安装虚拟环境"></a>安装虚拟环境</h3><ul>
+<li>venv （python 内置 仅支持 Python3 以上版本）</li>
+<li>virtualenv</li>
+<li>anaconda3</li>
+</ul>
+<p>我们使用 venv</p>
+<ul>
+<li>创建名为 envpy37 的 python3.7 的虚拟环境</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># python -m venv envpy37</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>进入虚拟环境</li>
+</ul>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># source env/bin/activate</span></span><br><span class="line">(envpy37) <span class="symbol">:~</span><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">退出envpy37</span><br><span class="line">~<span class="comment"># deactivate</span></span><br><span class="line"></span><br><span class="line">为了方便切换，我们设置一个别名</span><br><span class="line"></span><br><span class="line">~<span class="comment"># vi .bashrc</span></span><br><span class="line"></span><br><span class="line">添加 <span class="keyword">alias</span> envpy37=<span class="string">&#x27;source env_py37/bin/activate&#x27;</span></span><br><span class="line"></span><br><span class="line">保存 退出 vim</span><br><span class="line"></span><br><span class="line">生效.bashrc</span><br><span class="line"></span><br><span class="line">~<span class="comment"># source .bashrc</span></span><br><span class="line"></span><br><span class="line">用设置的别名启动虚拟环境</span><br><span class="line"></span><br><span class="line">~<span class="comment"># envpy37</span></span><br><span class="line"></span><br><span class="line">(env_py37) <span class="symbol">:~</span><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">查看虚拟环境的python版本</span><br><span class="line"></span><br><span class="line">(env_py37) <span class="symbol">:~</span><span class="comment"># python -V</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Python</span> <span class="number">3.7</span>.<span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-Git"><a href="#安装-Git" class="headerlink" title="安装 Git"></a>安装 Git</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># sudo apt install git</span></span><br><span class="line"></span><br><span class="line">为了方便XShell或者CRT连接服务器，建议安装OpenSSH</span><br><span class="line">~<span class="comment"># sudo apt install openssh-server openssh-client</span></span><br><span class="line"></span><br><span class="line">~<span class="comment"># service ssh restart</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-MySQL"><a href="#安装-MySQL" class="headerlink" title="安装 MySQL"></a>安装 MySQL</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># sudo apt install mysql-server mysql-client</span></span><br><span class="line"></span><br><span class="line">~<span class="comment"># sudo apt-get install libmysqld-dev</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试 mysql</li>
+<li>本地登陆 mysql</li>
+<li>修改登陆权限</li>
+<li>开启 ssh 远程连接权限</li>
+<li>用工具测试远程连接</li>
+</ul>
+<h3 id="测试项目"><a href="#测试项目" class="headerlink" title="测试项目"></a>测试项目</h3><ul>
+<li><p>把项目用 Git 或者 ftp 推上服务器 （比如存放在&#x2F;srv&#x2F;）</p>
+</li>
+<li><p>切换到 python 虚拟环境 ，比如上面提到的 env_py37</p>
+</li>
+<li><p>进入项目根目录</p>
+</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) :~<span class="comment"># cd project</span></span><br><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个虚拟环境下安装依赖包 requirements.txt (可以通过 pip freeze .)获取该文件内容</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># pip install -r requirements.txt</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>迁移数据</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># python manage.py makemigrations</span></span><br><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># python manage.py migrate</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>运行项目<ul>
+<li>记得开放 8000 端口</li>
+<li>在 setting.py—–ALLOW_HOST 改成 [“*”]</li>
+<li>在 setting.py—–DEBUG&#x3D;False</li>
+<li>在浏览器用 ip 访问 http:&#x2F;&#x2F;<your ip>:8000</li>
+<li>确保没有错误，和在本地运行一样没有任何错误</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># python manage.py runserver 0.0.0.0:8000</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-uwsgi-应用服务器"><a href="#安装-uwsgi-应用服务器" class="headerlink" title="安装 uwsgi 应用服务器"></a>安装 uwsgi 应用服务器</h3><ul>
+<li>uwsgi 必须安装在系统级别的 Python 环境中，不要安装到虚拟环境中</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 记得退出虚拟环境</span></span><br><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># deactivate</span></span><br><span class="line"></span><br><span class="line">~<span class="comment"># pip install uwsgi</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试 uwsgi<ul>
+<li>在根目录下新建一个 testuwsgi.py 并且添加内容</li>
+<li>测试 uwsgi 服务器的响应 执行 testuwsgi.py (必须在 testuwsgi 的同级目录下执行)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) :~# cd <span class="keyword">project</span></span><br><span class="line">(env_py37) <span class="keyword">project</span>:~# vi testuwsgi.py3</span><br><span class="line"></span><br><span class="line">#添加以下代码</span><br><span class="line"><span class="keyword">def</span> application(env,start_response):</span><br><span class="line">	start_response(<span class="string">&#x27;200 ok&#x27;</span>,[(<span class="string">&#x27;Content-Type&#x27;</span>,<span class="string">&#x27;text/html&#x27;</span>)])</span><br><span class="line">	<span class="keyword">return</span> [b<span class="string">&#x27;Hello world&#x27;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(保存退出vim)</span><br><span class="line">(env_py37) <span class="keyword">project</span>:~# uwsgi --http :<span class="number">8000</span> --wsgi-<span class="keyword">file</span> testuwsgi.py</span><br><span class="line"></span><br><span class="line">在浏览器用ip访问 http:<span class="comment">//&lt;your ip&gt;:8000</span></span><br><span class="line">正常结果是是返回一个Hello world 网页</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为项目配置 uwsgi 的启动文件</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) project:~# vi project_uwsgi.ini</span><br><span class="line"></span><br><span class="line"><span class="comment">#添加以下配置</span></span><br><span class="line">[uwsgi]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 虚拟环境的路径</span></span><br><span class="line"><span class="attribute">home</span>=/root/env_py37</span><br><span class="line"></span><br><span class="line"><span class="comment"># 项目的绝对路径</span></span><br><span class="line"><span class="attribute">chdir</span>=/srv/project</span><br><span class="line"></span><br><span class="line"><span class="comment">#主进程</span></span><br><span class="line"><span class="attribute">master</span>=<span class="literal">true</span></span><br><span class="line"><span class="comment"># 工作进程</span></span><br><span class="line"><span class="attribute">processes</span>=4</span><br><span class="line"></span><br><span class="line"><span class="comment"># 工作线程</span></span><br><span class="line"><span class="attribute">threads</span>=2</span><br><span class="line"></span><br><span class="line"><span class="comment"># socket 用于连接nginx （nginx的server）</span></span><br><span class="line"><span class="attribute">socket</span>=127.0.0.1:8002</span><br><span class="line"></span><br><span class="line"><span class="comment"># 退出的时候是否清理环境</span></span><br><span class="line"><span class="attribute">vacuum</span>=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置一个uwsgi.pid 文件</span></span><br><span class="line">pidfile = uwsgi.pid</span><br><span class="line"></span><br><span class="line"><span class="comment"># 项目的wsgi文件</span></span><br><span class="line"><span class="attribute">wsgi-file</span>=shudong_server/wsgi.py</span><br><span class="line"></span><br><span class="line">(保存退出vim)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试启动文件</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(env_py37) <span class="keyword">project</span>:~<span class="comment"># uwsgi --ini djangotest.ini</span></span><br><span class="line"></span><br><span class="line">没有错误的话，可以试着访问项目</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-nginx"><a href="#安装-nginx" class="headerlink" title="安装 nginx"></a>安装 nginx</h3><ul>
+<li>nginx 是一个 web 服务器。用来加载静态文件和接收 http 请求的</li>
+<li>同样安装到系统环境</li>
+<li>nginx 常用命令<ul>
+<li>启动 nginx：service nginx start</li>
+<li>关闭 nginx：service nginx stop</li>
+<li>重启 nginx：service nginx restart</li>
+<li>刷新 nginx 配置: nginx -s reload</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># sudo apt install nginx</span></span><br><span class="line">~<span class="comment"># nginx -v</span></span><br><span class="line">nginx <span class="built_in">version</span>: nginx/<span class="number">1.10</span><span class="number">.3</span> (Ubuntu)  <span class="comment"># 安装成功</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>收集静态文件</p>
+<ul>
+<li>静态文件应该让<code>nginx</code>来处理，而不是让<code>django</code>来做。</li>
+<li>首先确保你的<code>settings.py</code>文件中有一个<code>STATIC_ROOT</code>配置，这个配置应该指定你的静态文件要放在哪个目录下</li>
+<li>那么我们可以执行以下命令：<code>python manage.py collectstatic</code>来收集所有静态文件</li>
+<li>执行完毕 可以查看目录是否生成静态文件</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在setting.py 添加以下代码</span></span><br><span class="line"></span><br><span class="line"><span class="attr">STATIC_ROOT</span> = <span class="string">&#x27;/srv/project/static/&#x27;</span> <span class="comment">#指定静态文件目录</span></span><br><span class="line"><span class="attr">STATIC_URL</span> = <span class="string">&#x27;/static/&#x27;</span></span><br><span class="line"><span class="attr">STATICFILES_DIRS</span> = [</span><br><span class="line">   os.path.join(BASE_DIR, <span class="string">&quot;static&quot;</span>),</span><br><span class="line">   <span class="string">&#x27;/srv/project/static/&#x27;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编写 nginx 的配置文件 在&#x2F;etc&#x2F;nginx&#x2F;conf.d 目录下 新建一个 project.conf<ul>
+<li>测试配置文件 service nginx configtest</li>
+<li>改完配置需要重启 service nginx restart</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">conf.d:~<span class="comment"># vi project.conf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#添加以下配置</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># configuration of the server</span></span><br><span class="line">server &#123;</span><br><span class="line">    <span class="comment"># the port your site will be served on</span></span><br><span class="line">    listen      <span class="number">80</span>;</span><br><span class="line">    <span class="comment"># the domain name it will serve for</span></span><br><span class="line">    server_name <span class="tag">&lt;你的域名&gt;</span>（可选  没有的话 用 _ 替代）; <span class="comment"># substitute your machine&#x27;s IP address or FQDN</span></span><br><span class="line">    charset     utf-<span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># max upload size</span></span><br><span class="line">    client_max_body_size <span class="number">75M</span>;   <span class="comment"># adjust to taste</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Django media</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">location</span> <span class="title">/static</span> &#123;</span><br><span class="line">        alias /srv/project/static; <span class="comment"># 项目静态文件目录</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Finally, send all non-media requests to the Django server.</span></span><br><span class="line">    <span class="keyword">location</span> <span class="title">/ &#123;</span></span><br><span class="line"><span class="title">        uwsgi_pass</span>  <span class="number">127.0</span>.<span class="number">0.1</span>:<span class="number">8002</span>; <span class="comment"># 配置和uwsgi通讯的地址（和uwsgi.ini的socket一样）</span></span><br><span class="line">        include     /etc/nginx/uwsgi_params; <span class="comment"># the uwsgi_params file you installed 这个文件在nginx下面，可以查看</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(保存退出vim)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>nginx 测试 ok</p>
+<p>在项目根目录执行 启动项目</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~<span class="comment"># service nginx start &amp;&amp; uwsgi -d --ini uwsgi.ini</span></span><br></pre></td></tr></table></figure>
+
+<p>在浏览器访问 访问成功 即部署成功</p>
+<h1 id="到此即部署完成"><a href="#到此即部署完成" class="headerlink" title="到此即部署完成"></a>到此即部署完成</h1><h3 id="第一次接触后端-如果有误～欢迎指正！"><a href="#第一次接触后端-如果有误～欢迎指正！" class="headerlink" title="第一次接触后端 如果有误～欢迎指正！"></a>第一次接触后端 如果有误～欢迎指正！</h3></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/">快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a><a class="next" href="/2020/06/16/%E5%B8%B8%E7%94%A8Git%20%E5%91%BD%E4%BB%A4%20%E6%B8%85%E5%8D%95%E9%80%9F%E6%9F%A5/">常用Git 命令 清单速查</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021/10/26/iOS%20Android%20%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91%E6%8F%92%E4%BB%B6%20fastlane-plugin-notifyworker%20%E9%80%82%E7%94%A8%E4%BA%8E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%EF%BC%8C%E9%92%89%E9%92%89/">iOS Android 打包分发插件 fastlane-plugin-notifyworker 适用于企业微信，钉钉</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/02/23/%E4%B8%80%E4%BA%9B%E6%9D%82%E4%B9%B1%E7%9A%84OC%E9%9D%A2%E8%AF%95%E9%A2%98/">一些杂乱的 OC 面试题</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/">快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/">Ubuntu + Django + Uwsgi + Nginx 线上部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/%E5%B8%B8%E7%94%A8Git%20%E5%91%BD%E4%BB%A4%20%E6%B8%85%E5%8D%95%E9%80%9F%E6%9F%A5/">常用Git 命令 清单速查</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/">swift面试题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2023 <a href="/." rel="nofollow">橘子的皮.
+赣ICP备2023012875号.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js"></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0"></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js?v=1.0.0" successtext="复制成功！"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.0"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
