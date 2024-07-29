@@ -1,49 +1,486 @@
-<!DOCTYPE html><html lang="[&quot;zh-CN&quot;,&quot;en&quot;,&quot;default&quot;]"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="伍佰说：你20多岁的年纪怎么这么痛苦？"><title>常用Git 命令 清单速查 | 橘子的皮</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/latest/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/pure-min.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/latest/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script type="text/javascript" src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"></script><script type="text/javascript" src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"></script><link rel="stylesheet" href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"><div class="darkmode-toggle">🌓</div><script>var prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
-var toggle = document.querySelector('.darkmode-toggle');
-var html = document.querySelector('html');
+<!DOCTYPE html>
+<html lang='["zh-CN","en","default"]'>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+      name="viewport"
+    />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta
+      content="black-translucent"
+      name="apple-mobile-web-app-status-bar-style"
+    />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="description" content="伍佰说：你20多岁的年纪怎么这么痛苦？" />
+    <title>常用Git 命令 清单速查 | 橘子的皮</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css?v=1.0.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//lib.baomitu.com/normalize/latest/normalize.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//lib.baomitu.com/pure/latest/pure-min.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//lib.baomitu.com/pure/latest/grids-responsive-min.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script
+      type="text/javascript"
+      src="//lib.baomitu.com/jquery/latest/jquery.min.js"
+    ></script>
+    <link rel="icon" mask="" sizes="any" href="/favicon.ico" />
+    <link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png" />
+    <script
+      type="text/javascript"
+      src="//lib.baomitu.com/clipboard.js/latest/clipboard.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//lib.baomitu.com/toastr.js/latest/toastr.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="//lib.baomitu.com/toastr.js/latest/toastr.min.css"
+    />
+    <div class="darkmode-toggle">🌓</div>
+    <script>
+      var prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)");
+      var toggle = document.querySelector(".darkmode-toggle");
+      var html = document.querySelector("html");
 
-html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
+      html.dataset.dark = localStorage.dark || prefersDarkMode.matches;
 
-toggle.addEventListener('click', () => {
-localStorage.dark = !(html.dataset.dark == 'true');
-html.dataset.dark = localStorage.dark;
-});</script><meta name="generator" content="Hexo 7.0.0"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">常用Git 命令 清单速查</h1><a id="logo" href="/.">橘子的皮</a><p class="description">人生苦短，还是要打工还是要打工打工打工</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">常用Git 命令 清单速查</h1><div class="post-meta">2020-06-16</div><div class="post-content"><p>记录了 git 命令的一些常规操作，tag 命令、分支远端交互、分支操作、版本控制、差异化比较、仓库迁移等命令，方便记忆和查询哈。</p>
-<span id="more"></span>
+      toggle.addEventListener("click", () => {
+        localStorage.dark = !(html.dataset.dark == "true");
+        html.dataset.dark = localStorage.dark;
+      });
+    </script>
+    <meta name="generator" content="Hexo 7.0.0" />
+  </head>
+  <body>
+    <div class="body_container">
+      <div id="header">
+        <div class="site-name">
+          <h1 class="hidden">常用Git 命令 清单速查</h1>
+          <a id="logo" href="/.">橘子的皮</a>
+          <p class="description">人生苦短，还是要打工还是要打工打工打工</p>
+        </div>
+        <div id="nav-menu">
+          <a class="current" href="/."><i class="fa fa-home"> 首页</i></a
+          ><a href="/archives/"><i class="fa fa-archive"> 归档</i></a
+          ><a href="/about/"><i class="fa fa-user"> 关于</i></a
+          ><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a>
+        </div>
+      </div>
+      <div class="pure-g" id="layout">
+        <div class="pure-u-1 pure-u-md-3-4">
+          <div class="content_container">
+            <div class="post">
+              <h1 class="post-title">常用Git 命令 清单速查</h1>
+              <div class="post-meta">2020-06-16</div>
+              <div class="post-content">
+                <p>
+                  记录了 git 命令的一些常规操作，tag
+                  命令、分支远端交互、分支操作、版本控制、差异化比较、仓库迁移等命令，方便记忆和查询哈。
+                </p>
+                <span id="more"></span>
 
-<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">git config  -l 查看git配置</span><br><span class="line"></span><br><span class="line">git config <span class="comment">--global core.excludesfile ~/.gitignore 配置全局的 定义Git全局的 .gitignore 文件</span></span><br><span class="line"></span><br><span class="line">git config <span class="comment">--global http.postBuffer 524288000 配置文件大小限制 500M</span></span><br><span class="line"></span><br><span class="line">git ls-files 查看本地缓存（就是<span class="keyword">commit</span>之后存在本地的文件）</span><br><span class="line"></span><br><span class="line">git rm -r <span class="comment">--cached . 删除本地缓存      --cached   + (文件路径）</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> <span class="comment">--amend -CHEAD  (使用完--cached就用 commit --amend -CHEAD 配合使用)</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> <span class="comment">--amend amend具有修改最后一次commit提交的功能</span></span><br><span class="line"></span><br><span class="line">git init 初始化本地库</span><br><span class="line"></span><br><span class="line">git status 查看工作区、暂存区的状态</span><br><span class="line"></span><br><span class="line">git <span class="keyword">add</span> &lt;file <span class="type">name</span>&gt; 将工作区的“新建/修改”添加到暂存区</span><br><span class="line"></span><br><span class="line">git rm <span class="comment">--cached &lt;file name&gt; 移除暂存区的修改</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> &lt;file <span class="type">name</span>&gt; 将暂存区的内容提交到本地库</span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> -m &quot;提交日志&quot; &lt;file <span class="type">name</span>&gt; 文件从暂存区到本地库</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="基本操作">
+                  <a href="#基本操作" class="headerlink" title="基本操作"></a
+                  >基本操作
+                </h3>
+                <figure class="highlight pgsql">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">git config  -l 查看git配置</span><br><span class="line"></span><br><span class="line">git config <span class="comment">--global core.excludesfile ~/.gitignore 配置全局的 定义Git全局的 .gitignore 文件</span></span><br><span class="line"></span><br><span class="line">git config <span class="comment">--global http.postBuffer 524288000 配置文件大小限制 500M</span></span><br><span class="line"></span><br><span class="line">git ls-files 查看本地缓存（就是<span class="keyword">commit</span>之后存在本地的文件）</span><br><span class="line"></span><br><span class="line">git rm -r <span class="comment">--cached . 删除本地缓存      --cached   + (文件路径）</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> <span class="comment">--amend -CHEAD  (使用完--cached就用 commit --amend -CHEAD 配合使用)</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> <span class="comment">--amend amend具有修改最后一次commit提交的功能</span></span><br><span class="line"></span><br><span class="line">git init 初始化本地库</span><br><span class="line"></span><br><span class="line">git status 查看工作区、暂存区的状态</span><br><span class="line"></span><br><span class="line">git <span class="keyword">add</span> &lt;file <span class="type">name</span>&gt; 将工作区的“新建/修改”添加到暂存区</span><br><span class="line"></span><br><span class="line">git rm <span class="comment">--cached &lt;file name&gt; 移除暂存区的修改</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> &lt;file <span class="type">name</span>&gt; 将暂存区的内容提交到本地库</span><br><span class="line"></span><br><span class="line">git <span class="keyword">commit</span> -m &quot;提交日志&quot; &lt;file <span class="type">name</span>&gt; 文件从暂存区到本地库</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="打-tag（发布版本）"><a href="#打-tag（发布版本）" class="headerlink" title="打 tag（发布版本）"></a>打 tag（发布版本）</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">tag</span> <span class="title">-m</span> <span class="string">&quot;tag 描述&quot;</span> <span class="string">&quot;tag版本号&quot;</span> 打上标签，这个很重要</span><br><span class="line"></span><br><span class="line">git push --tags 推送<span class="keyword">tag</span>到远端仓库</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="打-tag（发布版本）">
+                  <a
+                    href="#打-tag（发布版本）"
+                    class="headerlink"
+                    title="打 tag（发布版本）"
+                  ></a
+                  >打 tag（发布版本）
+                </h3>
+                <figure class="highlight crmsh">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">git <span class="keyword">tag</span> <span class="title">-m</span> <span class="string">&quot;tag 描述&quot;</span> <span class="string">&quot;tag版本号&quot;</span> 打上标签，这个很重要</span><br><span class="line"></span><br><span class="line">git push --tags 推送<span class="keyword">tag</span>到远端仓库</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="远端交互"><a href="#远端交互" class="headerlink" title="远端交互"></a>远端交互</h3><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git clone <span class="variable">&lt;远程库地址&gt;</span> 克隆远程库</span><br><span class="line"></span><br><span class="line">git remote -v 查看远程库地址别名</span><br><span class="line"></span><br><span class="line">git remote add <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;远程库地址&gt;</span> 新建远程库地址别名</span><br><span class="line"></span><br><span class="line">git remote rm <span class="variable">&lt;别名&gt;</span> 删除本地中远程库别名</span><br><span class="line"></span><br><span class="line">git push <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;分支名&gt;</span> 本地库某个分支推送到远程库，分支必须指定</span><br><span class="line"></span><br><span class="line">git pull <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;分支名&gt;</span> 把远程库的修改拉取到本地（该命令包括git fetch，git merge）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span>：查看历史提交（空格向下翻页，b向上翻页，q退出）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span> --pretty=oneline：以漂亮的一行显示，包含全部哈希索引值</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span> --oneline：以简洁的一行显示，包含简洁哈希索引值</span><br><span class="line"></span><br><span class="line">git reflog：以简洁的一行显示，包含简洁哈希索引值，同时显示移动到某个历史版本所需的步数</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="远端交互">
+                  <a href="#远端交互" class="headerlink" title="远端交互"></a
+                  >远端交互
+                </h3>
+                <figure class="highlight pf">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line"></span><br><span class="line">git clone <span class="variable">&lt;远程库地址&gt;</span> 克隆远程库</span><br><span class="line"></span><br><span class="line">git remote -v 查看远程库地址别名</span><br><span class="line"></span><br><span class="line">git remote add <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;远程库地址&gt;</span> 新建远程库地址别名</span><br><span class="line"></span><br><span class="line">git remote rm <span class="variable">&lt;别名&gt;</span> 删除本地中远程库别名</span><br><span class="line"></span><br><span class="line">git push <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;分支名&gt;</span> 本地库某个分支推送到远程库，分支必须指定</span><br><span class="line"></span><br><span class="line">git pull <span class="variable">&lt;别名&gt;</span> <span class="variable">&lt;分支名&gt;</span> 把远程库的修改拉取到本地（该命令包括git fetch，git merge）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span>：查看历史提交（空格向下翻页，b向上翻页，q退出）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span> --pretty=oneline：以漂亮的一行显示，包含全部哈希索引值</span><br><span class="line"></span><br><span class="line">git <span class="keyword">log</span> --oneline：以简洁的一行显示，包含简洁哈希索引值</span><br><span class="line"></span><br><span class="line">git reflog：以简洁的一行显示，包含简洁哈希索引值，同时显示移动到某个历史版本所需的步数</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="分支操作"><a href="#分支操作" class="headerlink" title="分支操作"></a>分支操作</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">branch </span>-l 查看本地分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-r 查看远端分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-a 查看全部分支（本地和远端）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-v 查看所有分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-d &lt;分支名&gt; 删除本地分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-r -d <span class="keyword">origin/&lt;分支名&gt; </span>删除远程分支</span><br><span class="line"></span><br><span class="line">git push <span class="keyword">origin </span>&lt;分支名&gt; 删除远程分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>&lt;分支名&gt; 新建分支</span><br><span class="line"></span><br><span class="line">git checkout &lt;分支名&gt; 切换分支</span><br><span class="line"></span><br><span class="line">git merge &lt;被合并分支名&gt; 合并分支</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="分支操作">
+                  <a href="#分支操作" class="headerlink" title="分支操作"></a
+                  >分支操作
+                </h3>
+                <figure class="highlight mipsasm">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">git <span class="keyword">branch </span>-l 查看本地分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-r 查看远端分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-a 查看全部分支（本地和远端）</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-v 查看所有分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-d &lt;分支名&gt; 删除本地分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>-r -d <span class="keyword">origin/&lt;分支名&gt; </span>删除远程分支</span><br><span class="line"></span><br><span class="line">git push <span class="keyword">origin </span>&lt;分支名&gt; 删除远程分支</span><br><span class="line"></span><br><span class="line">git <span class="keyword">branch </span>&lt;分支名&gt; 新建分支</span><br><span class="line"></span><br><span class="line">git checkout &lt;分支名&gt; 切换分支</span><br><span class="line"></span><br><span class="line">git merge &lt;被合并分支名&gt; 合并分支</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="版本控制"><a href="#版本控制" class="headerlink" title="版本控制"></a>版本控制</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard 简洁/完整哈希索引值：回到指定哈希值所对应的版本</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD：强制工作区、暂存区、本地库为当前HEAD指针所在的版本</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD^：后退一个版本（一个^表示回退一个版本）</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD~1：后退一个版本（波浪线~后面的数字表示后退几个版本）</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="版本控制">
+                  <a href="#版本控制" class="headerlink" title="版本控制"></a
+                  >版本控制
+                </h3>
+                <figure class="highlight pgsql">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard 简洁/完整哈希索引值：回到指定哈希值所对应的版本</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD：强制工作区、暂存区、本地库为当前HEAD指针所在的版本</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD^：后退一个版本（一个^表示回退一个版本）</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">reset</span> <span class="comment">--hard HEAD~1：后退一个版本（波浪线~后面的数字表示后退几个版本）</span></span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="比较差异"><a href="#比较差异" class="headerlink" title="比较差异"></a>比较差异</h3><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">git diff：比较工作区和暂存区的所有文件差异</span><br><span class="line"></span><br><span class="line">git diff &lt;<span class="keyword">file</span> <span class="keyword">name</span>&gt;：比较工作区和暂存区的指定文件的差异</span><br><span class="line"></span><br><span class="line">git diff HEAD|HEAD^|HEAD~|哈希索引值 &lt;<span class="keyword">file</span> <span class="keyword">name</span>&gt;：比较工作区跟本地库的某个版本的指定文件的差异</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="比较差异">
+                  <a href="#比较差异" class="headerlink" title="比较差异"></a
+                  >比较差异
+                </h3>
+                <figure class="highlight fortran">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line"></span><br><span class="line">git diff：比较工作区和暂存区的所有文件差异</span><br><span class="line"></span><br><span class="line">git diff &lt;<span class="keyword">file</span> <span class="keyword">name</span>&gt;：比较工作区和暂存区的指定文件的差异</span><br><span class="line"></span><br><span class="line">git diff HEAD|HEAD^|HEAD~|哈希索引值 &lt;<span class="keyword">file</span> <span class="keyword">name</span>&gt;：比较工作区跟本地库的某个版本的指定文件的差异</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="迁移（示例）"><a href="#迁移（示例）" class="headerlink" title="迁移（示例）"></a>迁移（示例）</h3><h3 id="git-迁移"><a href="#git-迁移" class="headerlink" title="git 迁移"></a>git 迁移</h3><ul>
-<li>从原地址克隆一份裸版本库</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> --bare https://github.com/username/project.git</span><br></pre></td></tr></table></figure>
+                <h3 id="迁移（示例）">
+                  <a
+                    href="#迁移（示例）"
+                    class="headerlink"
+                    title="迁移（示例）"
+                  ></a
+                  >迁移（示例）
+                </h3>
+                <h3 id="git-迁移">
+                  <a href="#git-迁移" class="headerlink" title="git 迁移"></a
+                  >git 迁移
+                </h3>
+                <ul>
+                  <li>从原地址克隆一份裸版本库</li>
+                </ul>
+                <figure class="highlight bash">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">$ git <span class="built_in">clone</span> --bare https://github.com/username/project.git</span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<ul>
-<li>然后新建一个地址，比如一下</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ https://gitee.com/username/newproject.git</span><br></pre></td></tr></table></figure>
+                <ul>
+                  <li>然后新建一个地址，比如一下</li>
+                </ul>
+                <figure class="highlight bash">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">$ https://gitee.com/username/newproject.git</span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<ul>
-<li>进入 project.git 这个全裸版本库，以镜像推送的方式上传代码到 newproject 上。</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> project.git</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push --mirror https://gitee.com/username/newproject.git</span></span><br></pre></td></tr></table></figure>
+                <ul>
+                  <li>
+                    进入 project.git 这个全裸版本库，以镜像推送的方式上传代码到
+                    newproject 上。
+                  </li>
+                </ul>
+                <figure class="highlight shell">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> project.git</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">git push --mirror https://gitee.com/username/newproject.git</span></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<ul>
-<li>使用新地址，直接 Clone 到本地就可以了。</li>
-</ul>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="keyword">clone</span> <span class="title">https</span>://gitee.com/username/newproject.git</span><br></pre></td></tr></table></figure>
+                <ul>
+                  <li>使用新地址，直接 Clone 到本地就可以了。</li>
+                </ul>
+                <figure class="highlight crmsh">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">$ git <span class="keyword">clone</span> <span class="title">https</span>://gitee.com/username/newproject.git</span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="git-stash（暂存命令-很实用）"><a href="#git-stash（暂存命令-很实用）" class="headerlink" title="git stash（暂存命令-很实用）"></a>git stash（暂存命令-很实用）</h3><p>git stash 可用来暂存当前正在进行的工作， 比如想 pull 最新代码， 又不想加新 commit， 或者另外一种情况，为了 fix 一个紧急的 bug, 先 stash, 使返回到自己上一个 commit, 改完 bug 之后再 stash pop, 继续原来的工作。<br>基础命令：</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">git stash          存储当前未提交的文件</span><br><span class="line"></span><br><span class="line">git stash list     列出当前git的所有暂存清单</span><br><span class="line"></span><br><span class="line">git show stash@&#123;0&#125; 指定回到<span class="number">0</span>的暂存文件</span><br><span class="line"></span><br><span class="line">git stash pop      回归到最后一个暂存清单并且删除该暂存清单</span><br><span class="line"></span><br><span class="line">git stash <span class="keyword">clear</span>    清空暂存清单</span><br><span class="line"></span><br><span class="line">git stash --<span class="keyword">help</span>   查看更多信息</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                <h3 id="git-stash（暂存命令-很实用）">
+                  <a
+                    href="#git-stash（暂存命令-很实用）"
+                    class="headerlink"
+                    title="git stash（暂存命令-很实用）"
+                  ></a
+                  >git stash（暂存命令-很实用）
+                </h3>
+                <p>
+                  git stash 可用来暂存当前正在进行的工作， 比如想 pull
+                  最新代码， 又不想加新 commit， 或者另外一种情况，为了 fix
+                  一个紧急的 bug, 先 stash, 使返回到自己上一个 commit, 改完 bug
+                  之后再 stash pop, 继续原来的工作。<br />基础命令：
+                </p>
+                <figure class="highlight mel">
+                  <table>
+                    <tr>
+                      <td class="gutter">
+                        <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre>
+                      </td>
+                      <td class="code">
+                        <pre><span class="line">git stash          存储当前未提交的文件</span><br><span class="line"></span><br><span class="line">git stash list     列出当前git的所有暂存清单</span><br><span class="line"></span><br><span class="line">git show stash@&#123;0&#125; 指定回到<span class="number">0</span>的暂存文件</span><br><span class="line"></span><br><span class="line">git stash pop      回归到最后一个暂存清单并且删除该暂存清单</span><br><span class="line"></span><br><span class="line">git stash <span class="keyword">clear</span>    清空暂存清单</span><br><span class="line"></span><br><span class="line">git stash --<span class="keyword">help</span>   查看更多信息</span><br><span class="line"></span><br></pre>
+                      </td>
+                    </tr>
+                  </table>
+                </figure>
 
-<h3 id="后续有记录将持续更新"><a href="#后续有记录将持续更新" class="headerlink" title="后续有记录将持续更新"></a>后续有记录将持续更新</h3></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/">Ubuntu + Django + Uwsgi + Nginx 线上部署</a><a class="next" href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/">swift面试题</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://example.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2024/02/29/qaql/">钱哪去里了-用户协议和隐私政策</a></li><li class="post-list-item"><a class="post-list-link" href="/2023/12/05/Certbot%20%E9%85%8D%E7%BD%AE%E6%B3%9B%E5%9F%9F%E5%90%8D/">Let’s Encrypt 免费泛域名配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/10/26/iOS%20Android%20%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91%E6%8F%92%E4%BB%B6%20fastlane-plugin-notifyworker%20%E9%80%82%E7%94%A8%E4%BA%8E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%EF%BC%8C%E9%92%89%E9%92%89/">iOS Android 打包分发插件 fastlane-plugin-notifyworker 适用于企业微信，钉钉</a></li><li class="post-list-item"><a class="post-list-link" href="/2021/02/23/%E4%B8%80%E4%BA%9B%E6%9D%82%E4%B9%B1%E7%9A%84OC%E9%9D%A2%E8%AF%95%E9%A2%98/">一些杂乱的 OC 面试题</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/">快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/">Ubuntu + Django + Uwsgi + Nginx 线上部署</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/06/16/%E5%B8%B8%E7%94%A8Git%20%E5%91%BD%E4%BB%A4%20%E6%B8%85%E5%8D%95%E9%80%9F%E6%9F%A5/">常用Git 命令 清单速查</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/">swift面试题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2024 <a href="/." rel="nofollow">橘子的皮.
-赣ICP备2023012875号.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js"></script><script type="text/javascript" src="/js/fancybox.js?v=1.0.0"></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"><script type="text/javascript" src="/js/copycode.js?v=1.0.0" successtext="复制成功！"></script><link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.0"><script type="text/javascript" src="/js/codeblock-resizer.js?v=1.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script></div></body></html>
+                <h3 id="后续有记录将持续更新">
+                  <a
+                    href="#后续有记录将持续更新"
+                    class="headerlink"
+                    title="后续有记录将持续更新"
+                  ></a
+                  >后续有记录将持续更新
+                </h3>
+              </div>
+              <div class="tags"></div>
+              <div class="post-nav">
+                <a
+                  class="pre"
+                  href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/"
+                  >Ubuntu + Django + Uwsgi + Nginx 线上部署</a
+                ><a
+                  class="next"
+                  href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/"
+                  >swift面试题</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pure-u-1-4 hidden_mid_and_down">
+          <div id="sidebar">
+            <div class="widget">
+              <form
+                class="search-form"
+                action="//www.google.com/search"
+                method="get"
+                accept-charset="utf-8"
+                target="_blank"
+              >
+                <input
+                  type="text"
+                  name="q"
+                  maxlength="20"
+                  placeholder="Search"
+                /><input
+                  type="hidden"
+                  name="sitesearch"
+                  value="http://example.com"
+                />
+              </form>
+            </div>
+            <div class="widget">
+              <div class="widget-title">
+                <i class="fa fa-folder-o"> 分类</i>
+              </div>
+            </div>
+            <div class="widget">
+              <div class="widget-title"><i class="fa fa-star-o"> 标签</i></div>
+              <div class="tagcloud"></div>
+            </div>
+            <div class="widget">
+              <div class="widget-title">
+                <i class="fa fa-file-o"> 最近文章</i>
+              </div>
+              <ul class="post-list">
+                <li class="post-list-item">
+                  <a class="post-list-link" href="/2024/02/29/qaql/"
+                    >钱哪去里了-用户协议和隐私政策</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2023/12/05/Certbot%20%E9%85%8D%E7%BD%AE%E6%B3%9B%E5%9F%9F%E5%90%8D/"
+                    >Let’s Encrypt 免费泛域名配置</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2021/10/26/iOS%20Android%20%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91%E6%8F%92%E4%BB%B6%20fastlane-plugin-notifyworker%20%E9%80%82%E7%94%A8%E4%BA%8E%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%EF%BC%8C%E9%92%89%E9%92%89/"
+                    >iOS Android 打包分发插件 fastlane-plugin-notifyworker
+                    适用于企业微信，钉钉</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2021/02/23/%E4%B8%80%E4%BA%9B%E6%9D%82%E4%B9%B1%E7%9A%84OC%E9%9D%A2%E8%AF%95%E9%A2%98/"
+                    >一些杂乱的 OC 面试题</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2020/12/16/%E4%BD%BF%E7%94%A8iTerm2%E7%BB%88%E7%AB%AF%E6%89%93%E5%BC%80iOS,Mac%E9%A1%B9%E7%9B%AE/"
+                    >快捷方式：iTerm2/终端 打开 iOS/Mac 项目</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2020/07/27/Ubuntu%20+%20Django%20+%20Uwsgi%20+%20Nginx%20%E7%BA%BF%E4%B8%8A%E9%83%A8%E7%BD%B2/"
+                    >Ubuntu + Django + Uwsgi + Nginx 线上部署</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2020/06/16/%E5%B8%B8%E7%94%A8Git%20%E5%91%BD%E4%BB%A4%20%E6%B8%85%E5%8D%95%E9%80%9F%E6%9F%A5/"
+                    >常用Git 命令 清单速查</a
+                  >
+                </li>
+                <li class="post-list-item">
+                  <a
+                    class="post-list-link"
+                    href="/2020/03/09/swift%E9%9D%A2%E8%AF%95%E9%A2%98/"
+                    >swift面试题</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="widget">
+              <div class="widget-title">
+                <i class="fa fa-external-link"> 友情链接</i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pure-u-1 pure-u-md-3-4">
+          <div id="footer">
+            Copyright © 2024
+            <a href="https://beian.miit.gov.cn/" rel="nofollow"
+              >橘子的皮. 赣ICP备2023012875号.</a
+            >
+            Powered by<a rel="nofollow" target="_blank" href="https://hexo.io">
+              Hexo.</a
+            ><a
+              rel="nofollow"
+              target="_blank"
+              href="https://github.com/tufu9441/maupassant-hexo"
+            >
+              Theme</a
+            >
+            by<a
+              rel="nofollow"
+              target="_blank"
+              href="https://github.com/pagecho"
+            >
+              Cho.</a
+            >
+          </div>
+        </div>
+      </div>
+      <a class="show" id="rocket" href="#top"></a>
+      <script type="text/javascript" src="/js/totop.js?v=1.0.0" async></script>
+      <script
+        type="text/javascript"
+        src="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.js"
+      ></script>
+      <script type="text/javascript" src="/js/fancybox.js?v=1.0.0"></script>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="//lib.baomitu.com/fancybox/latest/jquery.fancybox.min.css"
+      />
+      <script
+        type="text/javascript"
+        src="/js/copycode.js?v=1.0.0"
+        successtext="复制成功！"
+      ></script>
+      <link rel="stylesheet" type="text/css" href="/css/copycode.css?v=1.0.0" />
+      <script
+        type="text/javascript"
+        src="/js/codeblock-resizer.js?v=1.0.0"
+      ></script>
+      <script type="text/javascript" src="/js/smartresize.js?v=1.0.0"></script>
+    </div>
+  </body>
+</html>
