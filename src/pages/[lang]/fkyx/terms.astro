@@ -1,9 +1,9 @@
 ---
 /**
- * 发疯一下 · 用户协议
- * Skeleton placeholder — replace <Fragment slot="body"> with full content.
+ * 发疯一下 · 用户服务协议
+ * Content source: https://docs.qq.com/doc/DSktiR0dQcWNDdU1x
  */
-import { LOCALES, type Locale, ui } from '~/i18n';
+import { LOCALES, type Locale, getLocaleFromUrl, switchLocalePath } from '~/i18n';
 import DocLayout from '~/layouts/DocLayout.astro';
 
 export function getStaticPaths() {
@@ -11,56 +11,131 @@ export function getStaticPaths() {
 }
 
 const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
-const t = ui(lang);
-const title = t('doc.terms.title');
-const placeholder = t('doc.placeholder.notice');
+const title = lang === 'zh-CN' ? '用户服务协议' : 'User Agreement';
+const updated = '2026-06-09';
+const updatedDisplay = '2026年06月09日';
+const otherLocalePath = switchLocalePath(Astro.url.pathname, lang === 'zh-CN' ? 'en' : 'zh-CN');
 ---
 
 <DocLayout
   kind="terms"
   title={title}
   appName="发疯一下"
+  updated={updated}
   path="/fkyx/terms/"
   description={`发疯一下 ${title}`}
 >
-  <div class="placeholder-notice">
-    <strong>⚠ {placeholder}</strong>
-    <p>
-      请将完整正文从
-      <a href="https://docs.qq.com/doc/DSktiR0dQcWNDdU1x" target="_blank" rel="noopener noreferrer">腾讯文档原文</a>
-      复制粘贴到 <code>src/pages/[lang]/fkyx/terms.astro</code> 中，覆盖此占位区。
-    </p>
-  </div>
+  {lang === 'en' && (
+    <div class="translation-notice">
+      <strong>Note:</strong> This document is currently available in Chinese only. Please
+      <a href={otherLocalePath}>switch to Chinese</a> for the authoritative text.
+    </div>
+  )}
 
-  <h2>1. 协议范围</h2>
-  <p>
-    本协议是您与 <strong>发疯一下</strong>（以下简称"本应用"）之间就使用本应用服务所订立的协议。
-  </p>
+  <p class="doc-meta-line">更新日期：{updatedDisplay}</p>
+  <p class="doc-meta-line">生效日期：{updatedDisplay}</p>
 
-  <h2>2. 服务内容</h2>
-  <p>（待补充）</p>
+  <p>欢迎使用《发疯一下》（以下简称"本应用"）。</p>
+  <p>在使用本应用前，请您认真阅读并充分理解本《用户服务协议》（以下简称"本协议"）。当您下载、安装、注册、登录或使用本应用时，即视为您已阅读、理解并同意接受本协议的全部内容。</p>
 
-  <h2>3. 用户行为规范</h2>
-  <p>（待补充）</p>
+  <h2>第一条 服务说明</h2>
+  <ol>
+    <li>本应用是一款以情绪释放、互动解压和娱乐体验为主要目的的工具类应用。</li>
+    <li>本应用提供但不限于以下功能：
+      <ul>
+        <li>情绪释放互动</li>
+        <li>解压场景体验</li>
+        <li>情绪记录</li>
+        <li>个性化主题内容</li>
+        <li>应用内购买服务</li>
+      </ul>
+    </li>
+    <li>本应用仅供娱乐和解压使用，不属于医疗产品、心理咨询产品或精神健康治疗产品。</li>
+    <li>本应用提供的内容不构成任何医疗建议、诊断意见或治疗方案。</li>
+  </ol>
 
-  <h2>4. 知识产权</h2>
-  <p>（待补充）</p>
+  <h2>第二条 用户行为规范</h2>
+  <p>用户在使用本应用过程中，应遵守法律法规及社会公序良俗。</p>
+  <p>不得利用本应用：</p>
+  <ul>
+    <li>发布违法内容</li>
+    <li>发布侮辱、诽谤信息</li>
+    <li>发布暴力、恐怖内容</li>
+    <li>发布色情低俗内容</li>
+    <li>发布侵犯他人合法权益的信息</li>
+    <li>从事任何违法违规活动</li>
+  </ul>
+  <p>用户应对其输入、保存或分享的内容承担全部责任。</p>
 
-  <h2>5. 隐私保护</h2>
-  <p>（待补充）</p>
+  <h2>第三条 用户输入内容</h2>
+  <ol>
+    <li>用户可在应用中输入文字内容作为情绪释放对象。</li>
+    <li>用户输入内容仅用于应用功能展示。</li>
+    <li>用户应确保输入内容合法合规。</li>
+    <li>因用户输入内容引发的法律责任，由用户自行承担。</li>
+    <li>开发者不对用户输入内容进行真实性审查。</li>
+  </ol>
 
-  <h2>6. 免责声明</h2>
-  <p>（待补充）</p>
+  <h2>第四条 知识产权</h2>
+  <p>本应用中的：</p>
+  <ul>
+    <li>软件代码</li>
+    <li>界面设计</li>
+    <li>图标</li>
+    <li>动画效果</li>
+    <li>音效资源</li>
+    <li>品牌名称</li>
+  </ul>
+  <p>均受相关法律保护。</p>
+  <p>未经开发者书面许可，任何个人或组织不得复制、传播、修改或用于商业用途。</p>
 
-  <h2>7. 协议的变更与终止</h2>
-  <p>（待补充）</p>
+  <h2>第五条 应用内购买</h2>
+  <ol>
+    <li>本应用部分功能可能需要付费解锁。</li>
+    <li>购买行为通过 Apple App Store 完成。</li>
+    <li>付款、退款及账单规则以 Apple 官方规则为准。</li>
+    <li>已购买内容可通过"恢复购买"功能恢复。</li>
+  </ol>
 
-  <h2>8. 法律适用与争议解决</h2>
-  <p>（待补充）</p>
+  <h2>第六条 服务变更与终止</h2>
+  <p>开发者有权根据运营情况：</p>
+  <ul>
+    <li>修改功能</li>
+    <li>调整服务内容</li>
+    <li>暂停部分服务</li>
+    <li>终止部分服务</li>
+  </ul>
+  <p>无需事先通知用户。</p>
+
+  <h2>第七条 免责声明</h2>
+  <p>用户理解并同意：</p>
+  <ol>
+    <li>本应用仅提供娱乐和解压服务。</li>
+    <li>本应用不保证能够缓解、治疗或改善任何心理问题。</li>
+    <li>用户因使用本应用产生的任何直接或间接损失，开发者不承担责任。</li>
+    <li>因网络故障、设备故障、系统升级等原因导致的服务中断，开发者不承担责任。</li>
+  </ol>
+
+  <h2>第八条 未成年人使用</h2>
+  <p>未成年人应在监护人指导下使用本应用。</p>
+  <p>如监护人发现未成年人存在不当使用行为，可停止其使用本应用。</p>
+
+  <h2>第九条 协议修改</h2>
+  <p>开发者有权根据法律法规或业务发展需要对本协议进行修改。</p>
+  <p>修改后的协议将在应用内公布。</p>
+  <p>继续使用本应用即视为接受修改后的协议。</p>
+
+  <h2>第十条 联系方式</h2>
+  <p>如您对本协议有任何疑问，可通过以下方式联系开发者：</p>
+  <p>电子邮箱：</p>
+  <p><a href="mailto:your@email.com">your@email.com</a></p>
+  <p>开发者：</p>
+  <p>Choosen</p>
+  <p>本协议最终解释权归开发者所有。</p>
 </DocLayout>
 
 <style>
-  .placeholder-notice {
+  .translation-notice {
     padding: 1rem 1.25rem;
     margin-bottom: 2rem;
     background: color-mix(in oklch, var(--color-accent) 8%, transparent);
@@ -69,12 +144,11 @@ const placeholder = t('doc.placeholder.notice');
     font-size: var(--text-sm);
     line-height: 1.7;
   }
-  .placeholder-notice strong { display: block; margin-bottom: 0.4rem; }
-  .placeholder-notice code {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    padding: 0.1em 0.4em;
-    background: var(--color-bg);
-    border-radius: var(--radius-xs);
+  .doc-meta-line {
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    margin: 0 0 0.25rem;
   }
+  /* Nested list inside an ordered list */
+  .prose ol > li > ul { margin: 0.5rem 0 0.75rem; }
 </style>

@@ -1,9 +1,9 @@
 ---
 /**
- * 发疯一下 · 隐私协议
- * Skeleton placeholder — replace <Fragment slot="body"> with full content.
+ * 发疯一下 · 隐私政策
+ * Content source: https://docs.qq.com/doc/DSnZyd2xFanFIck1N
  */
-import { LOCALES, type Locale, ui } from '~/i18n';
+import { LOCALES, type Locale, getLocaleFromUrl, switchLocalePath } from '~/i18n';
 import DocLayout from '~/layouts/DocLayout.astro';
 
 export function getStaticPaths() {
@@ -11,57 +11,143 @@ export function getStaticPaths() {
 }
 
 const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
-const t = ui(lang);
-const title = t('doc.privacy.title');
-const placeholder = t('doc.placeholder.notice');
+const title = lang === 'zh-CN' ? '隐私政策' : 'Privacy Policy';
+const updated = '2026-06-09';
+const updatedDisplay = '2026年06月09日';
+const otherLocalePath = switchLocalePath(Astro.url.pathname, lang === 'zh-CN' ? 'en' : 'zh-CN');
 ---
 
 <DocLayout
   kind="privacy"
   title={title}
   appName="发疯一下"
+  updated={updated}
   path="/fkyx/privacy/"
   description={`发疯一下 ${title}`}
 >
-  <div class="placeholder-notice">
-    <strong>⚠ {placeholder}</strong>
-    <p>
-      请将完整正文从
-      <a href="https://docs.qq.com/doc/DSnZyd2xFanFIck1N" target="_blank" rel="noopener noreferrer">腾讯文档原文</a>
-      复制粘贴到 <code>src/pages/[lang]/fkyx/privacy.astro</code> 中，覆盖此占位区。
-    </p>
-  </div>
+  {lang === 'en' && (
+    <div class="translation-notice">
+      <strong>Note:</strong> This document is currently available in Chinese only. Please
+      <a href={otherLocalePath}>switch to Chinese</a> for the authoritative text.
+    </div>
+  )}
 
-  <h2>1. 引言</h2>
-  <p>
-    欢迎使用 <strong>发疯一下</strong>（以下简称"本应用"）。本应用尊重并保护所有使用服务用户的个人隐私权。
-    为了给您提供更准确、更有个性化的服务，本应用会按照本隐私权政策的规定使用和披露您的个人信息。
-  </p>
+  <p class="doc-meta-line">更新日期：{updatedDisplay}</p>
+  <p class="doc-meta-line">生效日期：{updatedDisplay}</p>
 
-  <h2>2. 适用范围</h2>
-  <p>（待补充）</p>
+  <p>《发疯一下》高度重视用户个人信息和隐私保护。</p>
+  <p>本隐私政策旨在说明我们如何收集、使用、存储和保护您的信息。</p>
+  <p>请您在使用本应用前仔细阅读本政策。</p>
 
-  <h2>3. 信息使用</h2>
-  <p>（待补充）</p>
+  <hr />
 
-  <h2>4. 信息披露</h2>
-  <p>（待补充）</p>
+  <h2>一、我们收集的信息</h2>
+  <h3>1. 您主动提供的信息</h3>
+  <p>当您使用本应用时，可能输入：</p>
+  <ul>
+    <li>情绪对象名称</li>
+    <li>情绪记录内容</li>
+    <li>个性化设置内容</li>
+  </ul>
+  <p>上述信息仅用于实现相关功能。</p>
 
-  <h2>5. 信息存储和交换</h2>
-  <p>（待补充）</p>
+  <h3>2. 设备信息</h3>
+  <p>为了保障应用正常运行，我们可能收集：</p>
+  <ul>
+    <li>设备型号</li>
+    <li>操作系统版本</li>
+    <li>应用版本号</li>
+    <li>崩溃日志</li>
+  </ul>
 
-  <h2>6. Cookie 与同类技术</h2>
-  <p>（待补充）</p>
+  <h3>3. 应用使用信息</h3>
+  <p>我们可能统计：</p>
+  <ul>
+    <li>启动次数</li>
+    <li>页面访问情况</li>
+    <li>功能使用情况</li>
+    <li>内购状态</li>
+  </ul>
+  <p>用于产品优化与问题分析。</p>
 
-  <h2>7. 本隐私政策的修改</h2>
-  <p>（待补充）</p>
+  <h2>二、我们不会收集的信息</h2>
+  <p>除非法律法规要求，我们不会主动收集：</p>
+  <ul>
+    <li>身份证号码</li>
+    <li>银行账户信息</li>
+    <li>支付密码</li>
+    <li>面部信息</li>
+    <li>指纹信息</li>
+    <li>通讯录</li>
+    <li>短信内容</li>
+    <li>通话记录</li>
+    <li>精准定位信息</li>
+  </ul>
 
-  <h2>8. 联系我们</h2>
-  <p>（待补充）</p>
+  <h2>三、信息存储</h2>
+  <ol>
+    <li>用户产生的数据默认存储在本地设备中。</li>
+    <li>如未来上线云同步功能，将单独征得用户授权。</li>
+    <li>用户可通过删除应用的方式删除本地数据。</li>
+  </ol>
+
+  <h2>四、第三方服务</h2>
+  <p>本应用可能接入以下第三方服务：</p>
+
+  <h3>Apple App Store</h3>
+  <p>用于：</p>
+  <ul>
+    <li>应用下载</li>
+    <li>应用更新</li>
+    <li>应用内购买</li>
+  </ul>
+  <p>相关隐私规则以 Apple 官方政策为准。</p>
+
+  <h3>Apple Analytics（如启用）</h3>
+  <p>用于：</p>
+  <ul>
+    <li>崩溃分析</li>
+    <li>性能统计</li>
+  </ul>
+  <p>仅收集匿名数据。</p>
+
+  <h2>五、信息安全</h2>
+  <p>我们采取合理措施保护用户信息：</p>
+  <ul>
+    <li>本地数据存储</li>
+    <li>系统权限控制</li>
+    <li>数据最小化原则</li>
+  </ul>
+  <p>但请理解，互联网环境无法保证绝对安全。</p>
+
+  <h2>六、未成年人保护</h2>
+  <p>我们重视未成年人隐私保护。</p>
+  <p>未成年人应在监护人同意和指导下使用本应用。</p>
+
+  <h2>七、您的权利</h2>
+  <p>您有权：</p>
+  <ul>
+    <li>查看个人信息</li>
+    <li>删除本地数据</li>
+    <li>撤回授权</li>
+    <li>停止使用本应用</li>
+  </ul>
+
+  <h2>八、隐私政策更新</h2>
+  <p>当本政策发生重大变化时，我们将在应用内进行提示。</p>
+  <p>继续使用本应用即表示接受更新后的政策。</p>
+
+  <h2>九、联系我们</h2>
+  <p>如果您对本隐私政策有任何问题，请联系：</p>
+  <p>电子邮箱：</p>
+  <p><a href="mailto:your@email.com">your@email.com</a></p>
+  <p>开发者：</p>
+  <p>Choosen</p>
+  <p>感谢您使用《发疯一下》。</p>
 </DocLayout>
 
 <style>
-  .placeholder-notice {
+  .translation-notice {
     padding: 1rem 1.25rem;
     margin-bottom: 2rem;
     background: color-mix(in oklch, var(--color-accent) 8%, transparent);
@@ -70,12 +156,9 @@ const placeholder = t('doc.placeholder.notice');
     font-size: var(--text-sm);
     line-height: 1.7;
   }
-  .placeholder-notice strong { display: block; margin-bottom: 0.4rem; }
-  .placeholder-notice code {
-    font-family: var(--font-mono);
-    font-size: 0.9em;
-    padding: 0.1em 0.4em;
-    background: var(--color-bg);
-    border-radius: var(--radius-xs);
+  .doc-meta-line {
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    margin: 0 0 0.25rem;
   }
 </style>
