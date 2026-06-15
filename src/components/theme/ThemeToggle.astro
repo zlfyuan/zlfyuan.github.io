@@ -1,0 +1,123 @@
+---
+/**
+ * ThemeToggle.astro — 3-state theme switch (system / light / dark)
+ *
+ * Renders three icon buttons. State persisted in localStorage.
+ * Initial theme is applied by an inline <script is:inline> in BaseLayout
+ * to prevent FOUC — this component only handles UI updates.
+ */
+import { type Locale, ui } from '~/i18n';
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const t = ui(lang);
+---
+
+<div class="theme-toggle" data-theme-toggle>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="system"
+    aria-label={t('theme.system')}
+    title={t('theme.system')}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="14" rx="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="light"
+    aria-label={t('theme.light')}
+    title={t('theme.light')}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme-value="dark"
+    aria-label={t('theme.dark')}
+    title={t('theme.dark')}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  </button>
+</div>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+  }
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: calc(var(--radius-md) - 4px);
+    color: var(--color-fg-subtle);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                color var(--duration-fast) var(--ease-out-soft);
+  }
+  .theme-btn:hover {
+    color: var(--color-fg);
+  }
+  .theme-btn[aria-pressed="true"] {
+    background: var(--color-bg-elevated);
+    color: var(--color-fg);
+    box-shadow: var(--shadow-xs);
+  }
+</style>
+
+<script>
+  // Mark the active button on load, then handle clicks.
+  const root = document.documentElement;
+  const stored = (localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null) ?? 'system';
+  function apply(theme: 'system' | 'light' | 'dark') {
+    const sysDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = theme === 'dark' || (theme === 'system' && sysDark);
+    root.classList.toggle('dark', isDark);
+    root.dataset.theme = theme;
+  }
+  apply(stored);
+
+  function syncButtons() {
+    const current = (root.dataset.theme as 'system' | 'light' | 'dark') ?? 'system';
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle] [data-theme-value]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.themeValue === current));
+    });
+  }
+  syncButtons();
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle] [data-theme-value]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const value = (btn.dataset.themeValue as 'system' | 'light' | 'dark') ?? 'system';
+      localStorage.setItem('theme', value);
+      apply(value);
+      syncButtons();
+    });
+  });
+
+  // Re-apply on system preference change (only when in 'system' mode)
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (((root.dataset.theme as string) ?? 'system') === 'system') apply('system');
+  });
+</script>

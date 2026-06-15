@@ -1,0 +1,68 @@
+---
+/**
+ * SEO.astro — Open Graph, Twitter card, canonical link
+ */
+import { site } from '~/data/site';
+import { type Locale, localizedPath } from '~/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  updatedTime?: Date;
+  lang: Locale;
+  path?: string; // page path without locale prefix
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og-default.png',
+  type = 'website',
+  publishedTime,
+  updatedTime,
+  lang,
+  path = Astro.url.pathname,
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title === site.title ? title : `${title} · ${site.title}`;
+const canonical = new URL(localizedPath(path, lang), site.url).toString();
+const imageUrl = new URL(image, site.url).toString();
+---
+
+<!-- Primary Meta Tags -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex,nofollow" />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:locale" content={lang === 'zh-CN' ? 'zh_CN' : 'en_US'} />
+<meta property="og:site_name" content={site.title} />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{updatedTime && <meta property="article:modified_time" content={updatedTime.toISOString()} />}
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonical} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />

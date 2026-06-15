@@ -1,0 +1,58 @@
+---
+/**
+ * About page — content from src/content/pages/about.md
+ */
+import { getEntry, render } from 'astro:content';
+import { LOCALES, type Locale, ui } from '~/i18n';
+import { site } from '~/data/site';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+const page = await getEntry('pages', 'about');
+const { Content } = page ? await render(page) : { Content: null };
+---
+
+<BaseLayout title={t('about.title')} path="/about/">
+  <section class="container-prose about">
+    <header class="page-head">
+      <h1 class="page-title">{t('about.title')}</h1>
+    </header>
+    {Content ? (
+      <div class="prose">
+        <Content />
+      </div>
+    ) : (
+      <div class="prose">
+        <p>你好，我是 <strong>zlfyuan</strong>，iOS 工程师，喜欢折腾一些东西。</p>
+        <p>这个博客用来记录工作学习中遇到的问题、解决方案，以及一些个人思考。</p>
+        <h2>联系方式</h2>
+        <ul>
+          <li>GitHub: <a href={site.socials.github}>zlfyuan</a></li>
+          <li>Gitee: <a href={site.socials.gitee}>zlfmayun</a></li>
+          <li>邮箱: <a href={site.email}>741136856@qq.com</a></li>
+        </ul>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: 4rem 6rem;
+  }
+  .page-head {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .page-title {
+    margin: 0;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+</style>

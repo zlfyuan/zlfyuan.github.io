@@ -1,0 +1,75 @@
+---
+/**
+ * Header.astro — sticky glass header with nav, lang switch, theme toggle
+ */
+import { type Locale } from '~/i18n';
+import Nav from './Nav.astro';
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from '../theme/ThemeToggle.astro';
+
+interface Props {
+  lang: Locale;
+}
+const { lang } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header glass" data-site-header>
+  <div class="container-wide header-inner">
+    <a href={`/${lang}/`} class="brand" data-astro-prefetch>
+      <span class="brand-mark">🍊</span>
+      <span class="brand-name">橘子的皮</span>
+    </a>
+
+    <div class="header-right">
+      <Nav lang={lang} currentPath={currentPath} />
+      <div class="header-actions">
+        <LangSwitch lang={lang} currentPath={currentPath} />
+        <ThemeToggle lang={lang} />
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    height: 60px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-fg);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    font-size: 1.25rem;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  @media (max-width: 640px) {
+    .header-inner { gap: 0.75rem; }
+    .header-right { gap: 0.5rem; }
+  }
+</style>

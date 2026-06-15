@@ -1,0 +1,106 @@
+---
+/**
+ * BaseLayout.astro — root layout
+ *
+ * Responsibilities:
+ *  - <html> shell with lang attribute
+ *  - FOUC-prevention inline script (sets .dark class before paint)
+ *  - SEO meta tags
+ *  - Header / Footer chrome
+ *  - ClientRouter for smooth view transitions
+ */
+import '~/styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import { site } from '~/data/site';
+import { type Locale, getLocaleFromUrl, ui } from '~/i18n';
+import SEO from '~/components/seo/SEO.astro';
+import Header from '~/components/header/Header.astro';
+import Footer from '~/components/footer/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  updatedTime?: Date;
+  path?: string;
+  noindex?: boolean;
+  ogImage?: string;
+}
+
+const props = Astro.props;
+const lang = getLocaleFromUrl(Astro.url);
+const t = ui(lang);
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- FOUC-prevention: apply theme class before paint -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          var active = stored || 'system';
+          var isDark = active === 'dark' || (active === 'system' && sys === 'dark');
+          document.documentElement.classList.toggle('dark', isDark);
+          document.documentElement.dataset.theme = active;
+        } catch (e) {}
+      })();
+    </script>
+
+    <SEO
+      title={props.title}
+      description={props.description}
+      image={props.image}
+      type={props.type}
+      publishedTime={props.publishedTime}
+      updatedTime={props.updatedTime}
+      lang={lang}
+      path={props.path}
+      noindex={props.noindex}
+    />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">跳到主要内容</a>
+    <Header lang={lang} />
+    <main id="main" class="site-main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--color-fg);
+    color: var(--color-bg);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    transition: top var(--duration-fast) var(--ease-out-soft);
+  }
+  .skip-link:focus { top: 1rem; }
+  .site-main {
+    min-height: 60vh;
+  }
+  /* View transition defaults */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 250ms;
+  }
+</style>

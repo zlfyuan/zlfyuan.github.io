@@ -1,0 +1,89 @@
+---
+/**
+ * Giscus.astro — GitHub Discussions-powered comments
+ *
+ * REPO_ID / CATEGORY_ID come from https://giscus.app/ after enabling the app
+ * on your GitHub repo. Override via env vars (PUBLIC_GISCUS_REPO_ID, etc.)
+ * or edit the fallback constants here.
+ */
+import { type Locale, ui } from '~/i18n';
+
+interface Props {
+  lang: Locale;
+  slug?: string;
+}
+const { lang, slug } = Astro.props;
+const t = ui(lang);
+
+const REPO = 'zlfyuan/zlfyuan.github.io';
+const REPO_ID = import.meta.env.PUBLIC_GISCUS_REPO_ID || 'R_PLACEHOLDER';
+const CATEGORY = 'General';
+const CATEGORY_ID = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID || 'DIC_PLACEHOLDER';
+---
+
+<div class="giscus-wrap">
+  <h2 class="giscus-title">{t('comments.title')}</h2>
+  {REPO_ID === 'R_PLACEHOLDER' ? (
+    <div class="giscus-placeholder">
+      <p><strong>评论系统未启用。</strong></p>
+      <p>
+        在 <a href="https://giscus.app/" target="_blank" rel="noopener noreferrer">giscus.app</a> 配置后，将
+        <code>PUBLIC_GISCUS_REPO_ID</code> 和 <code>PUBLIC_GISCUS_CATEGORY_ID</code> 写入 <code>.env</code>。
+      </p>
+      <p class="giscus-powered">{t('comments poweredBy')}</p>
+    </div>
+  ) : (
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={REPO}
+      data-repo-id={REPO_ID}
+      data-category={CATEGORY}
+      data-category-id={CATEGORY_ID}
+      data-mapping="specific"
+      data-term={slug ?? 'guestbook'}
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang={lang === 'zh-CN' ? 'zh-CN' : 'en'}
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    />
+  )}
+</div>
+
+<style>
+  .giscus-wrap {
+    margin-top: 3rem;
+  }
+  .giscus-title {
+    margin: 0 0 1.5rem;
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .giscus-placeholder {
+    padding: 2rem;
+    background: var(--color-bg-subtle);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+  .giscus-placeholder code {
+    font-family: var(--font-mono);
+    padding: 0.1em 0.4em;
+    background: var(--color-bg);
+    border-radius: var(--radius-xs);
+    font-size: 0.9em;
+  }
+  .giscus-powered {
+    margin-top: 1rem;
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+  }
+</style>

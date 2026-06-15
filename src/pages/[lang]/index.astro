@@ -1,0 +1,145 @@
+---
+/**
+ * Localized home page — /[lang]/
+ */
+import { LOCALES, type Locale, ui, getLocaleFromUrl } from '~/i18n';
+import { site } from '~/data/site';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? getLocaleFromUrl(Astro.url);
+const t = ui(lang);
+---
+
+<BaseLayout
+  title={site.title}
+  description={lang === 'zh-CN' ? site.description : site.descriptionEn}
+ 
+  path="/"
+>
+  <section class="hero">
+    <div class="container-wide hero-inner">
+      <p class="hero-greeting">{t('home.hero.greeting')}</p>
+      <h1 class="hero-title text-gradient">{site.title}</h1>
+      <p class="hero-tagline">{t('site.tagline')}</p>
+      <div class="hero-cta">
+        <a href={`/${lang}/blog/`} class="btn btn-primary" data-astro-prefetch>
+          {t('home.hero.ctaPrimary')}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+        <a href={`/${lang}/about/`} class="btn btn-secondary" data-astro-prefetch>
+          {t('home.hero.ctaSecondary')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-wide section">
+    <header class="section-head">
+      <h2 class="section-title">{t('home.latestPosts')}</h2>
+      <p class="section-subtitle">{t('home.latestPostsDesc')}</p>
+    </header>
+    <div class="empty">
+      <p>{t('blog.emptyState')}</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: 6rem 4rem;
+    text-align: center;
+  }
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  .hero-greeting {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-base);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .hero-title {
+    margin: 0;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .hero-tagline {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-lg);
+    max-width: 36rem;
+    line-height: 1.6;
+  }
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                transform var(--duration-fast) var(--ease-out-soft);
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+  .btn-primary:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: var(--color-bg-subtle);
+    color: var(--color-fg);
+    border: 1px solid var(--color-border);
+  }
+  .btn-secondary:hover {
+    background: var(--color-border-subtle);
+  }
+  .section {
+    padding-block: 4rem;
+  }
+  .section-head {
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    margin: 0 0 0.5rem;
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .section-subtitle {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-base);
+  }
+  .empty {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--color-bg-subtle);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-xl);
+    color: var(--color-fg-muted);
+  }
+</style>

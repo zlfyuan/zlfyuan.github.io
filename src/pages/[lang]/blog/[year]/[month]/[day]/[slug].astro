@@ -1,0 +1,41 @@
+---
+/**
+ * Dynamic blog post route — preserves Hexo URL structure for SEO/backlinks.
+ *
+ * Path: /[lang]/blog/[year]/[month]/[day]/[slug]/
+ *
+ * - `slug` is the original Chinese slug from frontmatter (e.g. "swift面试题")
+ * - Date components come from frontmatter `date`
+ */
+import { getCollection, render } from 'astro:content';
+import { LOCALES, type Locale } from '~/i18n';
+import PostLayout from '~/layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return LOCALES.flatMap((lang) =>
+    posts
+      .filter((post) => post.data.lang === lang)
+      .map((post) => {
+        const d = post.data.date;
+        return {
+          params: {
+            lang,
+            year: String(d.getFullYear()),
+            month: String(d.getMonth() + 1).padStart(2, '0'),
+            day: String(d.getDate()).padStart(2, '0'),
+            slug: post.data.originalSlug ?? post.id,
+          },
+          props: { post },
+        };
+      })
+  );
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<PostLayout post={post} headings={headings}>
+  <Content />
+</PostLayout>

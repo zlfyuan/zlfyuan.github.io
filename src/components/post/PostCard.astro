@@ -1,0 +1,111 @@
+---
+/**
+ * PostCard.astro — list item for blog index/archives/tags
+ */
+import { type Locale } from '~/i18n';
+import { formatDate } from '~/lib/format-date';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  lang: Locale;
+  compact?: boolean;
+}
+const { post, lang, compact = false } = Astro.props;
+const d = post.data.date;
+const ymd = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+const slug = post.data.originalSlug ?? post.id;
+const href = `/${lang}/blog/${ymd}/${slug}/`;
+---
+
+<a href={href} class:list={['post-card', { compact }]} data-astro-prefetch>
+  <div class="post-card-date">
+    <time datetime={d.toISOString()}>{formatDate(d, lang)}</time>
+  </div>
+  <div class="post-card-body">
+    <h3 class="post-card-title">{post.data.title}</h3>
+    {post.data.description && (
+      <p class="post-card-desc">{post.data.description}</p>
+    )}
+    {post.data.tags.length > 0 && (
+      <div class="post-card-tags">
+        {post.data.tags.slice(0, 4).map((tag) => (
+          <span class="post-card-tag">#{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+  <svg class="post-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+</a>
+
+<style>
+  .post-card {
+    display: grid;
+    grid-template-columns: 140px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                padding var(--duration-fast) var(--ease-out-soft);
+  }
+  .post-card:hover {
+    background: var(--color-bg-subtle);
+    padding-inline: 1rem;
+    margin-inline: -1rem;
+    border-radius: var(--radius-md);
+    border-bottom-color: transparent;
+  }
+  .post-card-date {
+    color: var(--color-fg-subtle);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .post-card-title {
+    margin: 0 0 0.4rem;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-fg);
+  }
+  .post-card-desc {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+  .post-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .post-card-tag {
+    color: var(--color-fg-subtle);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+  }
+  .post-card-arrow {
+    color: var(--color-fg-subtle);
+    transition: transform var(--duration-fast) var(--ease-out-soft),
+                color var(--duration-fast) var(--ease-out-soft);
+  }
+  .post-card:hover .post-card-arrow {
+    color: var(--color-accent);
+    transform: translateX(4px);
+  }
+  .post-card.compact {
+    grid-template-columns: 100px 1fr;
+    padding: 1rem 0;
+  }
+  .post-card.compact .post-card-arrow { display: none; }
+  @media (max-width: 720px) {
+    .post-card { grid-template-columns: 1fr; gap: 0.5rem; }
+    .post-card-arrow { display: none; }
+  }
+</style>

@@ -1,0 +1,83 @@
+---
+/**
+ * PostNav.astro — prev / next post navigation
+ */
+import { type Locale, ui } from '~/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  prev: CollectionEntry<'blog'> | null;
+  next: CollectionEntry<'blog'> | null;
+  lang: Locale;
+}
+const { prev, next, lang } = Astro.props;
+const t = ui(lang);
+
+function urlFor(post: CollectionEntry<'blog'> | null) {
+  if (!post) return '';
+  const d = post.data.date;
+  const ymd = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+  const slug = post.data.originalSlug ?? post.id;
+  return `/${lang}/blog/${ymd}/${slug}/`;
+}
+---
+
+<nav class="post-nav" aria-label="Post navigation">
+  {prev ? (
+    <a href={urlFor(prev)} class="post-nav-link prev" data-astro-prefetch>
+      <span class="post-nav-direction">← {t('post.prev')}</span>
+      <span class="post-nav-title">{prev.data.title}</span>
+    </a>
+  ) : (
+    <span></span>
+  )}
+  {next ? (
+    <a href={urlFor(next)} class="post-nav-link next" data-astro-prefetch>
+      <span class="post-nav-direction">{t('post.next')} →</span>
+      <span class="post-nav-title">{next.data.title}</span>
+    </a>
+  ) : (
+    <span></span>
+  )}
+</nav>
+
+<style>
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .post-nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                border-color var(--duration-fast) var(--ease-out-soft),
+                transform var(--duration-fast) var(--ease-out-soft);
+  }
+  .post-nav-link.next { text-align: right; align-items: flex-end; }
+  .post-nav-link:hover {
+    background: var(--color-border-subtle);
+    border-color: var(--color-border);
+    transform: translateY(-1px);
+  }
+  .post-nav-direction {
+    color: var(--color-fg-muted);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .post-nav-title {
+    color: var(--color-fg);
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+  @media (max-width: 640px) {
+    .post-nav { grid-template-columns: 1fr; }
+  }
+</style>

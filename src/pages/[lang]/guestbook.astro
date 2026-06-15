@@ -1,0 +1,51 @@
+---
+/**
+ * Guestbook page — Giscus-powered comments
+ */
+import { LOCALES, type Locale, ui } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Giscus from '~/components/comments/Giscus.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+---
+
+<BaseLayout title={t('guestbook.title')} description={t('guestbook.subtitle')} path="/guestbook/">
+  <section class="container-prose guestbook">
+    <header class="page-head">
+      <h1 class="page-title">{t('guestbook.title')}</h1>
+      <p class="page-subtitle">{t('guestbook.subtitle')}</p>
+    </header>
+    <div class="comments-wrap">
+      <Giscus lang={lang} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .guestbook {
+    padding-block: 4rem 6rem;
+  }
+  .page-head {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .page-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-lg);
+  }
+  .comments-wrap {
+    margin-top: 2rem;
+  }
+</style>

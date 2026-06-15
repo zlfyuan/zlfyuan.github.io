@@ -1,0 +1,77 @@
+---
+/**
+ * TOC.astro — table of contents from headings
+ */
+import { type Locale, ui } from '~/i18n';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  lang: Locale;
+}
+const { headings, lang } = Astro.props;
+const t = ui(lang);
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 4);
+---
+
+{toc.length > 0 && (
+  <nav class="toc" aria-label={t('post.tableOfContents')}>
+    <p class="toc-title">{t('post.tableOfContents')}</p>
+    <ul class="toc-list">
+      {toc.map((h) => (
+        <li class:list={['toc-item', `depth-${h.depth}`]}>
+          <a href={`#${h.slug}`} class="toc-link">{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc {
+    font-size: var(--text-sm);
+  }
+  .toc-title {
+    margin: 0 0 0.75rem;
+    color: var(--color-fg-muted);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--color-border);
+  }
+  .toc-item {
+    margin: 0;
+  }
+  .toc-item.depth-2 .toc-link { padding-left: 1rem; }
+  .toc-item.depth-3 .toc-link { padding-left: 1.5rem; }
+  .toc-item.depth-4 .toc-link { padding-left: 2rem; }
+  .toc-link {
+    display: block;
+    padding: 0.4rem 1rem;
+    margin-left: -1px;
+    color: var(--color-fg-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    line-height: 1.5;
+    transition: color var(--duration-fast) var(--ease-out-soft),
+                border-color var(--duration-fast) var(--ease-out-soft);
+  }
+  .toc-link:hover {
+    color: var(--color-fg);
+  }
+  .toc-link.active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+</style>

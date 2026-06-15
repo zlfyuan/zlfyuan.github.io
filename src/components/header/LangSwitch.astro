@@ -1,0 +1,52 @@
+---
+/**
+ * LangSwitch.astro — toggles URL prefix between /zh-CN/ and /en/
+ */
+import { type Locale, otherLocale, localeLabels, switchLocalePath } from '~/i18n';
+
+interface Props {
+  lang: Locale;
+  currentPath: string;
+}
+const { lang, currentPath } = Astro.props;
+const target = otherLocale(lang);
+const targetPath = switchLocalePath(currentPath, target);
+---
+
+<a
+  href={targetPath}
+  class="lang-switch"
+  aria-label={`Switch to ${localeLabels[target]}`}
+  title={`Switch to ${localeLabels[target]}`}
+  data-astro-prefetch
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+  <span class="lang-label">{localeLabels[target]}</span>
+</a>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-md);
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                color var(--duration-fast) var(--ease-out-soft);
+  }
+  .lang-switch:hover {
+    background: var(--color-bg-subtle);
+    color: var(--color-fg);
+  }
+  @media (max-width: 540px) {
+    .lang-label { display: none; }
+  }
+</style>

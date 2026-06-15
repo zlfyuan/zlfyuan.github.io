@@ -1,0 +1,116 @@
+---
+/**
+ * Archives page — timeline grouped by year
+ */
+import { getCollection } from 'astro:content';
+import { LOCALES, type Locale, ui } from '~/i18n';
+import { formatDateShort } from '~/lib/format-date';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+const posts = (await getCollection('blog', ({ data }) => data.lang === lang && !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Group by year
+const byYear = posts.reduce<Record<number, typeof posts>>((acc, post) => {
+  const y = post.data.date.getFullYear();
+  (acc[y] ??= []).push(post);
+  return acc;
+}, {});
+const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+---
+
+<BaseLayout title={t('archives.title')} path="/archives/">
+  <section class="container-prose archives">
+    <header class="page-head">
+      <h1 class="page-title">{t('archives.title')}</h1>
+      <p class="page-subtitle">{posts.length} {t('archives.count')}</p>
+    </header>
+
+    {years.map((year) => (
+      <section class="year-block">
+        <h2 class="year-heading">{year}</h2>
+        <ul class="year-list">
+          {byYear[year].map((post) => {
+            const d = post.data.date;
+            const ymd = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+            const slug = post.data.originalSlug ?? post.id;
+            return (
+              <li>
+                <a href={`/${lang}/blog/${ymd}/${slug}/`} class="archive-link" data-astro-prefetch>
+                  <time class="archive-date" datetime={d.toISOString()}>{formatDateShort(d, lang)}</time>
+                  <span class="archive-title">{post.data.title}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .archives {
+    padding-block: 4rem 6rem;
+  }
+  .page-head {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .page-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-base);
+  }
+  .year-block {
+    margin-bottom: 3rem;
+  }
+  .year-heading {
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-fg);
+    letter-spacing: -0.01em;
+  }
+  .year-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .archive-link {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    text-decoration: none;
+    color: var(--color-fg);
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .archive-link:hover { color: var(--color-accent); }
+  .archive-date {
+    color: var(--color-fg-subtle);
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+  }
+  .archive-title {
+    font-size: var(--text-base);
+  }
+  @media (max-width: 540px) {
+    .archive-link { grid-template-columns: 80px 1fr; gap: 0.75rem; }
+  }
+</style>

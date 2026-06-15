@@ -1,0 +1,167 @@
+---
+/**
+ * PostLayout.astro — blog post template
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { type Locale, getLocaleFromUrl, ui, localizedPath } from '~/i18n';
+import { formatDate, readingTime, countWords } from '~/lib/format-date';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import TOC from '~/components/post/TOC.astro';
+import PostMeta from '~/components/post/PostMeta.astro';
+import PostNav from '~/components/post/PostNav.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  headings: { depth: number; slug: string; text: string }[];
+  related?: CollectionEntry<'blog'>[];
+}
+
+const { post, headings, related = [] } = Astro.props;
+const lang = (post.data.lang as Locale) ?? getLocaleFromUrl(Astro.url);
+const t = ui(lang);
+const minutes = readingTime(post.body ?? '', lang);
+const words = countWords(post.body ?? '');
+
+// Compute prev/next based on date
+const all = await getCollection('blog', ({ data }) => data.lang === lang && !data.draft);
+all.sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const idx = all.findIndex((p) => p.id === post.id);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx < all.length - 1 ? all[idx + 1] : null;
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  publishedTime={post.data.date}
+  updatedTime={post.data.updated}
+  path={`/blog/${post.data.date.getFullYear()}/${String(post.data.date.getMonth() + 1).padStart(2, '0')}/${String(post.data.date.getDate()).padStart(2, '0')}/${post.data.originalSlug ?? post.id}/`}
+>
+  <article class="post">
+    <header class="post-header container-prose">
+      <a href={`/${lang}/blog/`} class="post-back" data-astro-prefetch>
+        ← {t('post.backToList')}
+      </a>
+      <h1 class="post-title">{post.data.title}</h1>
+      <PostMeta
+        date={post.data.date}
+        updated={post.data.updated}
+        minutes={minutes}
+        words={words}
+        tags={post.data.tags}
+        lang={lang}
+      />
+    </header>
+
+    <div class="post-body container-wide">
+      <div class="prose">
+        <slot />
+      </div>
+      {headings.length > 0 && (
+        <aside class="post-toc">
+          <TOC headings={headings} lang={lang} />
+        </aside>
+      )}
+    </div>
+
+    <footer class="post-footer container-prose">
+      {post.data.tags.length > 0 && (
+        <div class="post-tags">
+          <span class="post-tags-label">{t('post.tags')}:</span>
+          {post.data.tags.map((tag) => (
+            <a href={`/${lang}/tags/${encodeURIComponent(tag)}/`} class="tag" data-astro-prefetch>
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+      <PostNav prev={prev} next={next} lang={lang} />
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    padding-block: 3rem 5rem;
+  }
+  .post-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .post-back {
+    display: inline-block;
+    margin-bottom: 2rem;
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .post-back:hover { color: var(--color-fg); }
+  .post-title {
+    margin: 0 0 1.5rem;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+  .post-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 4rem;
+    align-items: start;
+  }
+  .post-toc {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .post-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .post-tags-label {
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    margin-right: 0.25rem;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    background: var(--color-bg-subtle);
+    color: var(--color-fg-muted);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                color var(--duration-fast) var(--ease-out-soft);
+  }
+  .tag:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-fg);
+  }
+  @media (max-width: 960px) {
+    .post-body {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .post-toc {
+      position: static;
+      max-height: none;
+      order: 2;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-border-subtle);
+    }
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+/**
+ * Nav.astro — primary horizontal navigation, locale-aware
+ */
+import { type Locale, ui, localizedPath } from '~/i18n';
+import { navItems } from '~/data/nav';
+
+interface Props {
+  lang: Locale;
+  currentPath: string;
+}
+const { lang, currentPath } = Astro.props;
+const t = ui(lang);
+
+function isActive(href: string): boolean {
+  const full = localizedPath(href, lang);
+  if (href === '/') return currentPath === full || currentPath === full + '' || currentPath === `/${lang}/`;
+  return currentPath === full || currentPath.startsWith(full);
+}
+---
+
+<nav class="nav" aria-label="Primary">
+  <ul class="nav-list">
+    {navItems.map((item) => (
+      <li>
+        <a
+          href={localizedPath(item.href, lang)}
+          class:list={['nav-link', { active: isActive(item.href) }]}
+          data-astro-prefetch
+        >
+          {t(item.key)}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-link {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-md);
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background var(--duration-fast) var(--ease-out-soft),
+                color var(--duration-fast) var(--ease-out-soft);
+  }
+  .nav-link:hover {
+    background: var(--color-bg-subtle);
+    color: var(--color-fg);
+  }
+  .nav-link.active {
+    color: var(--color-fg);
+    background: var(--color-bg-subtle);
+  }
+  @media (max-width: 640px) {
+    .nav-list { gap: 0; }
+    .nav-link { padding: 0.5rem 0.625rem; font-size: var(--text-xs); }
+  }
+</style>

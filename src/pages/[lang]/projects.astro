@@ -1,0 +1,130 @@
+---
+/**
+ * Projects page — showcase
+ */
+import { getCollection } from 'astro:content';
+import { LOCALES, type Locale, ui } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+const projects = (await getCollection('projects', ({ data }) => data.lang === lang))
+  .sort((a, b) => b.data.order - a.data.order);
+---
+
+<BaseLayout title={t('projects.title')} description={t('projects.subtitle')} path="/projects/">
+  <section class="container-wide projects">
+    <header class="page-head">
+      <h1 class="page-title">{t('projects.title')}</h1>
+      <p class="page-subtitle">{t('projects.subtitle')}</p>
+    </header>
+
+    {projects.length > 0 ? (
+      <ul class="project-grid">
+        {projects.map((p) => (
+          <li class="project-card">
+            <h3 class="project-title">{p.data.title}</h3>
+            <p class="project-desc">{p.data.description}</p>
+            {p.data.tech.length > 0 && (
+              <div class="project-tech">
+                {p.data.tech.map((tech) => <span class="tech-pill">{tech}</span>)}
+              </div>
+            )}
+            <div class="project-links">
+              {p.data.repo && <a href={p.data.repo} target="_blank" rel="noopener noreferrer">{t('projects.viewSource')}</a>}
+              {p.data.demo && <a href={p.data.demo} target="_blank" rel="noopener noreferrer">{t('projects.viewDemo')}</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Coming soon…</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .projects {
+    padding-block: 4rem 6rem;
+  }
+  .page-head {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .page-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-lg);
+  }
+  .project-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .project-card {
+    padding: 1.5rem;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    transition: transform var(--duration-fast) var(--ease-out-soft),
+                border-color var(--duration-fast) var(--ease-out-soft);
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-border);
+  }
+  .project-title {
+    margin: 0 0 0.5rem;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-fg);
+  }
+  .project-desc {
+    margin: 0 0 1rem;
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+  }
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .tech-pill {
+    padding: 0.15em 0.6em;
+    background: var(--color-bg);
+    border-radius: 999px;
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    color: var(--color-fg-muted);
+  }
+  .project-links {
+    display: flex;
+    gap: 1rem;
+  }
+  .project-links a {
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .project-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-fg-muted);
+  }
+</style>

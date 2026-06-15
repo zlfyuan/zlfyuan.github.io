@@ -1,0 +1,33 @@
+---
+/**
+ * Root /: redirect to default locale
+ *
+ * Static-hosting friendly: meta refresh + canonical link + JS fallback.
+ */
+import { DEFAULT_LOCALE } from '~/i18n';
+
+const target = `/${DEFAULT_LOCALE}/`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting…</title>
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <meta name="robots" content="noindex" />
+    <script is:inline set:html={`window.location.replace('${target}');`} />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: flex; align-items: center; justify-content: center;
+        min-height: 100vh; margin: 0; color: #555;
+      }
+      a { color: #0070f3; }
+    </style>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>{target}</a>…</p>
+  </body>
+</html>

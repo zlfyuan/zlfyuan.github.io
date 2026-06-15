@@ -1,0 +1,65 @@
+---
+/**
+ * Blog list page — all posts in reverse chronological order
+ */
+import { getCollection } from 'astro:content';
+import { LOCALES, type Locale, ui } from '~/i18n';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import PostCard from '~/components/post/PostCard.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+const posts = (await getCollection('blog', ({ data }) => data.lang === lang && !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title={t('blog.title')} description={t('blog.subtitle')} path="/blog/">
+  <section class="container-wide blog-index">
+    <header class="page-head">
+      <h1 class="page-title">{t('blog.title')}</h1>
+      <p class="page-subtitle">{t('blog.subtitle')}</p>
+    </header>
+
+    {posts.length > 0 ? (
+      <div class="post-list">
+        {posts.map((post) => <PostCard post={post} lang={lang} />)}
+      </div>
+    ) : (
+      <p class="empty">{t('blog.emptyState')}</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-index {
+    padding-block: 4rem 6rem;
+  }
+  .page-head {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .page-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-fg-muted);
+    font-size: var(--text-lg);
+  }
+  .post-list {
+    max-width: 56rem;
+    margin-inline: auto;
+  }
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-fg-muted);
+  }
+</style>
