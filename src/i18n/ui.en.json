@@ -64,5 +64,9 @@
   "blog.filterByTag": "Filter by tag",
   "theme.light": "Light",
   "theme.dark": "Dark",
-  "theme.system": "System"
+  "theme.system": "System",
+  "doc.privacy.title": "Privacy Policy",
+  "doc.terms.title": "User Agreement",
+  "doc.placeholder.notice": "This page is a placeholder skeleton; full content to be added.",
+  "doc.lastUpdated": "Last updated"
 }

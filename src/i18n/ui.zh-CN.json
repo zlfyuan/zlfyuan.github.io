@@ -64,5 +64,9 @@
   "blog.filterByTag": "按标签筛选",
   "theme.light": "浅色",
   "theme.dark": "深色",
-  "theme.system": "跟随系统"
+  "theme.system": "跟随系统",
+  "doc.privacy.title": "隐私协议",
+  "doc.terms.title": "用户协议",
+  "doc.placeholder.notice": "本页内容为骨架占位，完整正文待补充。",
+  "doc.lastUpdated": "最后更新"
 }

@@ -1,0 +1,141 @@
+---
+/**
+ * DocLayout.astro — layout for long-form legal documents
+ *
+ * Used for app policies (privacy, terms) and other static legal pages.
+ * - No sidebar / breadcrumb (clean reading view)
+ * - Sticky back link at top
+ * - Apple-style long-form prose (inherits `.prose` from global.css)
+ */
+import { type Locale, getLocaleFromUrl, ui } from '~/i18n';
+import { site } from '~/data/site';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+interface Props {
+  /** Document kind, used in <title> and header label */
+  kind: 'privacy' | 'terms' | string;
+  /** Display title, e.g. "隐私协议" */
+  title: string;
+  /** App the document applies to (defaults to "发疯一下") */
+  appName?: string;
+  /** ISO date string for "Last updated" */
+  updated?: string;
+  /** Custom page path (used for canonical URL) */
+  path?: string;
+  /** Optional description */
+  description?: string;
+}
+
+const props = Astro.props;
+const lang = getLocaleFromUrl(Astro.url);
+const t = ui(lang);
+const appName = props.appName ?? '发疯一下';
+const updated = props.updated ?? '2026-06-15';
+const updatedDisplay = new Date(updated).toLocaleDateString(lang === 'zh-CN' ? 'zh-CN' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={`${appName} · ${props.title}`}
+  description={props.description ?? `${appName} ${props.title}`}
+  lang={lang}
+  path={props.path}
+>
+  <article class="doc container-prose">
+    <nav class="doc-topbar">
+      <a href={`/${lang}/`} class="doc-back" data-astro-prefetch>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        <span>{site.title}</span>
+      </a>
+    </nav>
+
+    <header class="doc-head">
+      <p class="doc-app">{appName}</p>
+      <h1 class="doc-title">{props.title}</h1>
+      <p class="doc-meta">
+        <span>Last updated · {updatedDisplay}</span>
+        <span class="doc-meta-sep">·</span>
+        <span>{site.title}</span>
+      </p>
+    </header>
+
+    <div class="doc-body prose">
+      <slot />
+    </div>
+
+    <footer class="doc-foot">
+      <a href={`/${lang}/`} class="doc-back-bottom" data-astro-prefetch>
+        ← {t('404.back')}
+      </a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .doc {
+    padding-block: 3rem 6rem;
+  }
+  .doc-topbar {
+    margin-bottom: 3rem;
+  }
+  .doc-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .doc-back:hover { color: var(--color-fg); }
+  .doc-head {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .doc-app {
+    margin: 0 0 0.5rem;
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .doc-title {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .doc-meta {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: var(--color-fg-subtle);
+    font-size: var(--text-sm);
+  }
+  .doc-meta-sep { opacity: 0.5; }
+  .doc-foot {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-subtle);
+    text-align: center;
+  }
+  .doc-back-bottom {
+    color: var(--color-fg-muted);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out-soft);
+  }
+  .doc-back-bottom:hover { color: var(--color-fg); }
+</style>

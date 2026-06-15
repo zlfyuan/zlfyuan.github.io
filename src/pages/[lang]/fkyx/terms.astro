@@ -1,0 +1,80 @@
+---
+/**
+ * 发疯一下 · 用户协议
+ * Skeleton placeholder — replace <Fragment slot="body"> with full content.
+ */
+import { LOCALES, type Locale, ui } from '~/i18n';
+import DocLayout from '~/layouts/DocLayout.astro';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const lang = (Astro.params.lang as Locale) ?? 'zh-CN';
+const t = ui(lang);
+const title = t('doc.terms.title');
+const placeholder = t('doc.placeholder.notice');
+---
+
+<DocLayout
+  kind="terms"
+  title={title}
+  appName="发疯一下"
+  path="/fkyx/terms/"
+  description={`发疯一下 ${title}`}
+>
+  <div class="placeholder-notice">
+    <strong>⚠ {placeholder}</strong>
+    <p>
+      请将完整正文从
+      <a href="https://docs.qq.com/doc/DSktiR0dQcWNDdU1x" target="_blank" rel="noopener noreferrer">腾讯文档原文</a>
+      复制粘贴到 <code>src/pages/[lang]/fkyx/terms.astro</code> 中，覆盖此占位区。
+    </p>
+  </div>
+
+  <h2>1. 协议范围</h2>
+  <p>
+    本协议是您与 <strong>发疯一下</strong>（以下简称"本应用"）之间就使用本应用服务所订立的协议。
+  </p>
+
+  <h2>2. 服务内容</h2>
+  <p>（待补充）</p>
+
+  <h2>3. 用户行为规范</h2>
+  <p>（待补充）</p>
+
+  <h2>4. 知识产权</h2>
+  <p>（待补充）</p>
+
+  <h2>5. 隐私保护</h2>
+  <p>（待补充）</p>
+
+  <h2>6. 免责声明</h2>
+  <p>（待补充）</p>
+
+  <h2>7. 协议的变更与终止</h2>
+  <p>（待补充）</p>
+
+  <h2>8. 法律适用与争议解决</h2>
+  <p>（待补充）</p>
+</DocLayout>
+
+<style>
+  .placeholder-notice {
+    padding: 1rem 1.25rem;
+    margin-bottom: 2rem;
+    background: color-mix(in oklch, var(--color-accent) 8%, transparent);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+  }
+  .placeholder-notice strong { display: block; margin-bottom: 0.4rem; }
+  .placeholder-notice code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.4em;
+    background: var(--color-bg);
+    border-radius: var(--radius-xs);
+  }
+</style>
